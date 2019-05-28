@@ -1,0 +1,78 @@
+
+function file_exists(name)
+   local file = io.open(name, "r")
+   if file ~= nil then
+       io.close(file)
+       return true
+   else
+       return false
+   end
+end
+
+-- Expose commandline console
+controlSocket('127.0.0.1:5199')
+setKey("YjsDePSLCZxErIOmBSd117W8V92ZOMbqlnRVnWomIjw=")
+
+-- Set ACLs
+setACL('0.0.0.0/0')
+
+-- Listen for plain DNS requests
+local plain_dns = os.getenv("DNSDIST_PLAIN_DNS")
+if plain_dns ~= nil and string.lower(plain_dns) == "yes" then
+    setLocal("0.0.0.0:53")
+end
+
+-- Listen for DNSCrypt queries
+local dnscrypt = os.getenv("DNSDIST_DNSCRYPT")
+if dnscrypt ~= nil and string.lower(dnscrypt) == "yes" then
+    -- Create DNSCrypt keys in case of absence
+    if not file_exists("/var/lib/dnsdist/resolver.cert") or not file_exists("/var/lib/dnsdist/resolver.key") then
+        infolog("Generate new DNSCrypt keys.")
+        generateDNSCryptProviderKeys("/var/lib/dnsdist/providerPublic.key", "/var/lib/dnsdist/providerPrivate.key")
+        generateDNSCryptCertificate("/var/lib/dnsdist/providerPrivate.key", "/var/lib/dnsdist/resolver.cert", "/var/lib/dnsdist/resolver.key", 20190428, os.time(os.date("!*t")), os.time({year=2025, month=2, day=1, hour=00, minute=00}))
+    end
+
+    local dnscrypt_provider_name = os.getenv("DNSDIST_DNSCRYPT_PROVIDER_NAME")
+    if dnscrypt_provider_name == nil then
+        dnscrypt_provider_name = "2.dnscrypt-cert."
+    end
+
+    addDNSCryptBind("0.0.0.0:8443", dnscrypt_provider_name, "/var/lib/dnsdist/resolver.cert", "/var/lib/dnsdist/resolver.key", {doTCP=true})
+end
+
+-- Listen for DNS-over-TLS queries
+local dot = os.getenv("DNSDIST_DNS_OVER_TLS")
+if dot ~= nil and string.lower(dot) == "yes" then
+    local dot_domain = os.getenv("DNSDIST_DNS_OVER_TLS_DOMAIN")
+    local dot_fullchain = "/etc/nginx/certs/" .. dot_domain .. "/fullchain.pem"
+    local dot_key = "/etc/nginx/certs/" .. dot_domain .. "/key.pem"
+
+    if file_exists(dot_fullchain) and file_exists(dot_key) then
+        addTLSLocal("0.0.0.0:853", dot_fullchain, dot_key)
+    else
+        errlog("Fatal error: Unable to find certificates for the TLS context on 0.0.0.0:853.")
+    end
+end
+
+-- Start webserver
+local start_webserver = os.getenv("DNSDIST_WEBSERVER")
+if start_webserver ~= nil and string.lower(start_webserver) == "yes" then
+    webserver("0.0.0.0:8083", "pdns", "pdns")
+end
+
+-- Log queries to stdout
+local quiet = os.getenv("DNSDIST_QUIET")
+if quiet == nil or string.lower(quiet) ~= "yes" then
+    addAction(AllRule(), LogAction('/dev/stdout', false, false, false))
+end
+
+-- Drop all queries for class CHAOS
+addAction(QClassRule(DNSClass.CHAOS), DropAction())
+
+-- Block hosts for 30 minutes that exceed 100 queries in 10 seconds
+function maintenance()
+    addDynBlocks(exceedQRate(100, 10), "Exceeded query rate", 1800)
+end
+
+-- Include additional configurations
+includeDirectory("/etc/dnsdist/conf.d")
