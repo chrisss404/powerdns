@@ -1,6 +1,6 @@
 FROM alpine:3.9 AS builder
 
-ARG RECURSOR_VERSION="4.1.12"
+ARG RECURSOR_VERSION="4.1.13"
 
 ARG COMPILER_FLAGS="-Os -fomit-frame-pointer"
 ARG LINKER_FLAGS="-Wl,--as-needed"
