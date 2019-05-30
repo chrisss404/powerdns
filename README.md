@@ -19,6 +19,7 @@
 -server_names = ['cisco', 'cloudflare']
 +server_names = ['example']
 
+[static]
 +  [static.'example']
 +  stamp = 'sdns://AQEAAAAAAAAADDEuMi4zLjQ6ODQ0MyAiUUaM_kzDn53zwrp8le2PlPYGvHokBJPRaN6edoLorRsyLmRuc2NyeXB0LWNlcnQuZXhhbXBsZS5jb20'
 ```
@@ -28,7 +29,7 @@
 * Go to `Settings` > `Network & Internet` > `Advanced` > `Private DNS` > `Private DNS provider hostname`
 * Enter DoT hostname: `dot.example.com`
 
-![Image of Android DoT configuration](android-dot.png)
+<a href="https://raw.githubusercontent.com/chrisss404/powerdns/master/android-dot.png"><img src="https://raw.githubusercontent.com/chrisss404/powerdns/master/android-dot.png" height="100"/></a>
 
 
 ## Private Authoritative Server
