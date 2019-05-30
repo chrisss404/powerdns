@@ -1,6 +1,70 @@
 
 ## Private Recursor
 
+Create `secure-recursor.yml` like this:
+
+    version: '2'
+    
+    services:
+    
+      gateway:
+        image: jwilder/nginx-proxy:alpine
+        volumes:
+          - "/var/run/docker.sock:/tmp/docker.sock:ro"
+          - "/etc/nginx/vhost.d"
+          - "/usr/share/nginx/html"
+          - "/etc/nginx/certs"
+        ports:
+          - "80:80"
+    
+      letsencrypt:
+        image: jrcs/letsencrypt-nginx-proxy-companion:latest
+        volumes:
+          - "/var/run/docker.sock:/var/run/docker.sock:ro"
+        volumes_from:
+          - gateway
+    
+      dnsdist:
+        image: chrisss404/powerdns:latest-dnsdist
+        environment:
+          - VIRTUAL_HOST=dot.example.com
+          - VIRTUAL_PORT=9999
+          - LETSENCRYPT_HOST=dot.example.com
+          - LETSENCRYPT_EMAIL=you@example.com
+          - DNSDIST_DNSCRYPT=yes
+          - DNSDIST_DNS_OVER_TLS=yes
+          - DNSDIST_DNS_OVER_TLS_DOMAIN=dot.example.com
+        volumes:
+          - "./blacklist.txt:/etc/dnsdist/blacklist.txt:ro"
+        volumes_from:
+          - gateway:ro
+        networks:
+          - recursor
+        ports:
+          - "853:853/tcp"
+          - "8443:8443/udp"
+          - "8443:8443/tcp"
+    
+      recursor:
+        image: chrisss404/powerdns:latest-recursor
+        networks:
+          recursor:
+            ipv4_address: 172.31.117.117
+    
+    networks:
+      recursor:
+        ipam:
+          driver: default
+          config:
+            - subnet: "172.31.117.0/24"
+
+Create `blacklist.txt` like this:
+
+    googleadservices.com
+    ...
+
+Then
+
     # start secure recursor (restart dnsdist when let's encrypt certificate is ready)
     docker-compose -f secure-recursor.yml up
     
@@ -29,10 +93,127 @@
 * Go to `Settings` > `Network & Internet` > `Advanced` > `Private DNS` > `Private DNS provider hostname`
 * Enter DoT hostname: `dot.example.com`
 
-<a href="https://raw.githubusercontent.com/chrisss404/powerdns/master/android-dot.png"><img src="https://raw.githubusercontent.com/chrisss404/powerdns/master/android-dot.png" height="100"/></a>
+<a href="https://raw.githubusercontent.com/chrisss404/powerdns/master/android-dot.png"><img src="https://raw.githubusercontent.com/chrisss404/powerdns/master/android-dot.png" height="200"/></a>
 
 
 ## Private Authoritative Server
+
+Create `private-authoritative.yml` like this:
+
+    version: '2'
+    
+    services:
+    
+      gateway:
+        image: jwilder/nginx-proxy:alpine
+        volumes:
+          - "/var/run/docker.sock:/tmp/docker.sock:ro"
+        networks:
+          - gateway
+        ports:
+          - "80:80"
+    
+      admin:
+        image: chrisss404/powerdns:latest-admin
+        depends_on:
+          - gateway
+          - admin-db
+          - authoritative
+        environment:
+          - VIRTUAL_PROTO=uwsgi
+          - VIRTUAL_HOST=admin.example.com
+          - VIRTUAL_PORT=3031
+          - ADMIN_PDNS_API_KEY=api-secret-authoritative
+          - ADMIN_USER_PASSWORD=very-secret
+        networks:
+          - gateway
+          - admin-db
+          - authoritative
+    
+      admin-db:
+        image: postgres:10.4-alpine
+        environment:
+          - POSTGRES_DB=pda
+          - POSTGRES_INITDB_ARGS=--data-checksums
+          - POSTGRES_PASSWORD=pda
+          - POSTGRES_USER=pda
+        networks:
+          - admin-db
+    
+      authoritative:
+        image: chrisss404/powerdns:latest-authoritative
+        depends_on:
+          - authoritative-db
+        environment:
+          - AUTHORITATIVE_API_KEY=api-secret-authoritative
+          - AUTHORITATIVE_WEBSERVER=yes
+          - AUTHORITATIVE_WEBSERVER_PASSWORD=web-secret-authoritative
+        networks:
+          authoritative:
+            ipv4_address: 172.31.118.118
+          authoritative-db:
+        ports:
+          - "8081:8081/tcp"
+    
+      authoritative-db:
+        image: postgres:10.4-alpine
+        environment:
+          - POSTGRES_DB=pdns
+          - POSTGRES_INITDB_ARGS=--data-checksums
+          - POSTGRES_PASSWORD=pdns
+          - POSTGRES_USER=pdns
+        networks:
+          - authoritative-db
+    
+      dnsdist:
+        image: chrisss404/powerdns:latest-dnsdist
+        environment:
+          - DNSDIST_API_KEY=api-secret-dnsdist
+          - DNSDIST_QUIET=no
+          - DNSDIST_WEBSERVER=yes
+          - DNSDIST_WEBSERVER_PASSWORD=web-secret-dnsdist
+          - DNSDIST_PLAIN=yes
+        networks:
+          - recursor
+        ports:
+          - "1053:53/tcp"
+          - "1053:53/udp"
+          - "8083:8083/tcp"
+    
+      recursor:
+        image: chrisss404/powerdns:latest-recursor
+        environment:
+          - RECURSOR_API_KEY=api-secret-recursor
+          - RECURSOR_DNSSEC=validate
+          - RECURSOR_FORWARD_ZONES=sys=172.31.118.118
+          - RECURSOR_QUIET=no
+          - RECURSOR_TRUST_ANCHORS=sys=54970 13 1 27efe1c1a790c3cbb43b947d6d6dfac62507097e
+          - RECURSOR_WEBSERVER=yes
+          - RECURSOR_WEBSERVER_PASSWORD=web-secret-recursor
+        networks:
+          recursor:
+            ipv4_address: 172.31.117.117
+          authoritative:
+        ports:
+          - "8082:8082/tcp"
+    
+    networks:
+      gateway:
+      admin-db:
+      authoritative:
+        ipam:
+          driver: default
+          config:
+            - subnet: "172.31.118.0/24"
+      authoritative-db:
+      recursor:
+        ipam:
+          driver: default
+          config:
+            - subnet: "172.31.117.0/24"
+
+
+Then
 
     # start powerdns stack
     docker-compose -f private-authoritative.yml up
