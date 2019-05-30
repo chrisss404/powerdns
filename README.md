@@ -29,8 +29,8 @@ Create `secure-recursor.yml` like this:
         environment:
           - VIRTUAL_HOST=dot.example.com
           - VIRTUAL_PORT=9999
-          - LETSENCRYPT_HOST=dot.example.com
           - LETSENCRYPT_EMAIL=you@example.com
+          - LETSENCRYPT_HOST=dot.example.com
           - DNSDIST_DNSCRYPT=yes
           - DNSDIST_DNS_OVER_TLS=yes
           - DNSDIST_DNS_OVER_TLS_DOMAIN=dot.example.com
@@ -63,9 +63,9 @@ Create `blacklist.txt` like this:
     googleadservices.com
     ...
 
-Then
+Then you can do the following:
 
-    # start secure recursor (restart dnsdist when let's encrypt certificate is ready)
+    # start secure recursor (restart dnsdist after the let's encrypt certificate is created)
     docker-compose -f secure-recursor.yml up
     
     # get DNSCrypt provider public key fingerprint
@@ -169,10 +169,10 @@ Create `private-authoritative.yml` like this:
         image: chrisss404/powerdns:latest-dnsdist
         environment:
           - DNSDIST_API_KEY=api-secret-dnsdist
+          - DNSDIST_PLAIN=yes
           - DNSDIST_QUIET=no
           - DNSDIST_WEBSERVER=yes
           - DNSDIST_WEBSERVER_PASSWORD=web-secret-dnsdist
-          - DNSDIST_PLAIN=yes
         networks:
           - recursor
         ports:
@@ -213,7 +213,7 @@ Create `private-authoritative.yml` like this:
             - subnet: "172.31.117.0/24"
 
 
-Then
+Then you can do the following:
 
     # start powerdns stack
     docker-compose -f private-authoritative.yml up
@@ -278,10 +278,10 @@ Then
 | Env-Variable                   | Description                                                                     |
 | ------------------------------ | ------------------------------------------------------------------------------- |
 | DNSDIST_API_KEY                | Static pre-shared authentication key for access to the REST API (default: pdns) |
-| DNSDIST_DNS_OVER_TLS           | Listen for DNS-over-TLS queries on port 853 (default: no)                       |
-| DNSDIST_DNS_OVER_TLS_DOMAIN    | Domain name of DNS server.                                                      |
 | DNSDIST_DNSCRYPT               | Listen for DNSCrypt queries on port 8443 (default: no)                          |
 | DNSDIST_DNSCRYPT_PROVIDER_NAME | DNSCrypt provider name (default: 2.dnscrypt-cert.example.com)                   |
+| DNSDIST_DNS_OVER_TLS           | Listen for DNS-over-TLS queries on port 853 (default: no)                       |
+| DNSDIST_DNS_OVER_TLS_DOMAIN    | Domain name of DNS server.                                                      |
 | DNSDIST_PLAIN                  | Listen for plain DNS queries on port 53 (default: no)                           |
 | DNSDIST_QUIET                  | Suppress logging of questions and answers (default: no)                         |
 | DNSDIST_WEBSERVER              | Start a webserver for REST API on port 8083 (default: no)                       |
