@@ -28,15 +28,15 @@ if [ "$1" = "pdns_server" ] && [ ! -f /etc/pdns/pdns.conf ]; then
     sed -i "s|# webserver-port=8081|webserver-port=8081|g" /etc/pdns/pdns.conf
 
     sed -i "s|# launch=|launch=gpgsql|g" /etc/pdns/pdns.conf
-    echo "gpgsql-user=${DB_USER:-pdns}" >> /etc/pdns/pdns.conf
-    echo "gpgsql-host=${DB_HOST:-authoritative-db}" >> /etc/pdns/pdns.conf
-    echo "gpgsql-port=${DB_PORT:-5432}" >> /etc/pdns/pdns.conf
-    echo "gpgsql-password=${DB_PASS:-pdns}" >> /etc/pdns/pdns.conf
-    echo "gpgsql-dbname=${DB_NAME:-pdns}" >> /etc/pdns/pdns.conf
+    echo "gpgsql-user=${AUTHORITATIVE_DB_USER:-pdns}" >> /etc/pdns/pdns.conf
+    echo "gpgsql-host=${AUTHORITATIVE_DB_HOST:-authoritative-db}" >> /etc/pdns/pdns.conf
+    echo "gpgsql-port=${AUTHORITATIVE_DB_PORT:-5432}" >> /etc/pdns/pdns.conf
+    echo "gpgsql-password=${AUTHORITATIVE_DB_PASS:-pdns}" >> /etc/pdns/pdns.conf
+    echo "gpgsql-dbname=${AUTHORITATIVE_DB_NAME:-pdns}" >> /etc/pdns/pdns.conf
     echo "gpgsql-dnssec=yes" >> /etc/pdns/pdns.conf
 
     attempts=0
-    while ! psql "host=${DB_HOST:-authoritative-db} dbname=${DB_NAME:-pdns} user=${DB_USER:-pdns} password=${DB_PASS:-pdns} port=${DB_PORT:-5432}" >/dev/null 2>&1; do
+    while ! psql "host=${AUTHORITATIVE_DB_HOST:-authoritative-db} dbname=${AUTHORITATIVE_DB_NAME:-pdns} user=${AUTHORITATIVE_DB_USER:-pdns} password=${AUTHORITATIVE_DB_PASS:-pdns} port=${AUTHORITATIVE_DB_PORT:-5432}" >/dev/null 2>&1; do
       if test "${attempts}" -ge 15; then
         echo "Unable to connect to postgres db"
         exit 1
@@ -47,11 +47,11 @@ if [ "$1" = "pdns_server" ] && [ ! -f /etc/pdns/pdns.conf ]; then
       attempts=$(expr "${attempts}" + 1)
     done
 
-    if psql "host=${DB_HOST:-authoritative-db} dbname=${DB_NAME:-pdns} user=${DB_USER:-pdns} password=${DB_PASS:-pdns} port=${DB_PORT:-5432}" -c "SELECT 1 FROM domains" >/dev/null 2>&1; then
+    if psql "host=${AUTHORITATIVE_DB_HOST:-authoritative-db} dbname=${AUTHORITATIVE_DB_NAME:-pdns} user=${AUTHORITATIVE_DB_USER:-pdns} password=${AUTHORITATIVE_DB_PASS:-pdns} port=${AUTHORITATIVE_DB_PORT:-5432}" -c "SELECT 1 FROM domains" >/dev/null 2>&1; then
       echo "Already provisioned postgres db"
     else
       echo "Provisioning postgres db"
-      psql "host=${DB_HOST:-authoritative-db} dbname=${DB_NAME:-pdns} user=${DB_USER:-pdns} password=${DB_PASS:-pdns} port=${DB_PORT:-5432}" < /usr/share/doc/pdns/schema.pgsql.sql
+      psql "host=${AUTHORITATIVE_DB_HOST:-authoritative-db} dbname=${AUTHORITATIVE_DB_NAME:-pdns} user=${AUTHORITATIVE_DB_USER:-pdns} password=${AUTHORITATIVE_DB_PASS:-pdns} port=${AUTHORITATIVE_DB_PORT:-5432}" < /usr/share/doc/pdns/schema.pgsql.sql
     fi
 fi
 

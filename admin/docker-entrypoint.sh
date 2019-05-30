@@ -5,15 +5,15 @@ if [ "$1" = "uwsgi" ] && [ ! -f /var/www/pdns-admin/config.py ]; then
     cp /var/www/pdns-admin/config_template.py /var/www/pdns-admin/config.py
 
     sed -i "s|LOG_FILE = 'logfile.log'|LOG_FILE = ''|g" /var/www/pdns-admin/config.py
-    sed -i "s|SQLA_DB_USER = 'pda'|SQLA_DB_USER = '${DB_USER:-pda}'|g" /var/www/pdns-admin/config.py
-    sed -i "s|SQLA_DB_PASSWORD = 'changeme'|SQLA_DB_PASSWORD = '${DB_PASS:-pda}'|g" /var/www/pdns-admin/config.py
-    sed -i "s|SQLA_DB_HOST = '127.0.0.1'|SQLA_DB_HOST = '${DB_HOST:-admin-db}'|g" /var/www/pdns-admin/config.py
-    sed -i "s|SQLA_DB_PORT = 3306|SQLA_DB_PORT = ${DB_PORT:-5432}|g" /var/www/pdns-admin/config.py
-    sed -i "s|SQLA_DB_NAME = 'pda'|SQLA_DB_NAME = '${DB_NAME:-pda}'|g" /var/www/pdns-admin/config.py
+    sed -i "s|SQLA_DB_USER = 'pda'|SQLA_DB_USER = '${ADMIN_DB_USER:-pda}'|g" /var/www/pdns-admin/config.py
+    sed -i "s|SQLA_DB_PASSWORD = 'changeme'|SQLA_DB_PASSWORD = '${ADMIN_DB_PASS:-pda}'|g" /var/www/pdns-admin/config.py
+    sed -i "s|SQLA_DB_HOST = '127.0.0.1'|SQLA_DB_HOST = '${ADMIN_DB_HOST:-admin-db}'|g" /var/www/pdns-admin/config.py
+    sed -i "s|SQLA_DB_PORT = 3306|SQLA_DB_PORT = ${ADMIN_DB_PORT:-5432}|g" /var/www/pdns-admin/config.py
+    sed -i "s|SQLA_DB_NAME = 'pda'|SQLA_DB_NAME = '${ADMIN_DB_NAME:-pda}'|g" /var/www/pdns-admin/config.py
     sed -i "s|SQLALCHEMY_DATABASE_URI = 'mysql://'+SQLA_DB_USER+':'+SQLA_DB_PASSWORD+'@'+SQLA_DB_HOST+':'+str(SQLA_DB_PORT)+'/'+SQLA_DB_NAME|SQLALCHEMY_DATABASE_URI = 'postgresql://'+SQLA_DB_USER+':'+SQLA_DB_PASSWORD+'@'+SQLA_DB_HOST+':'+str(SQLA_DB_PORT)+'/'+SQLA_DB_NAME|g" /var/www/pdns-admin/config.py
 
     attempts=0
-    while ! psql "host=${DB_HOST:-admin-db} dbname=${DB_NAME:-pda} user=${DB_USER:-pda} password=${DB_PASS:-pda} port=${DB_PORT:-5432}" >/dev/null 2>&1; do
+    while ! psql "host=${ADMIN_DB_HOST:-admin-db} dbname=${ADMIN_DB_NAME:-pda} user=${ADMIN_DB_USER:-pda} password=${ADMIN_DB_PASS:-pda} port=${ADMIN_DB_PORT:-5432}" >/dev/null 2>&1; do
       if test "${attempts}" -ge 15; then
         echo "Unable to connect to postgres db"
         exit 1
