@@ -1,6 +1,6 @@
 FROM alpine:3.9 AS builder
 
-ARG RECURSOR_VERSION="4.1.12"
+ARG RECURSOR_VERSION="latest"
 
 ARG COMPILER_FLAGS="-Os -fomit-frame-pointer"
 ARG LINKER_FLAGS="-Wl,--as-needed"
@@ -36,8 +36,9 @@ RUN export BUILDER_VERSION=$([ "${RECURSOR_VERSION}" = "latest" ] && echo `date 
     autoreconf -vif && \
     CFLAGS=${COMPILER_FLAGS} CXXFLAGS=${COMPILER_FLAGS} LDFLAGS=${LINKER_FLAGS} ./configure \
             --sysconfdir=/etc/pdns-recursor \
+            --enable-nod \
+            --with-libsodium \
             --with-lua \
-            --enable-libsodium \
             --with-protobuf \
             --disable-shared \
             --enable-static && \
@@ -53,7 +54,7 @@ COPY --from=builder /usr/local/sbin /usr/sbin/
 COPY --from=builder /etc/pdns-recursor /etc/pdns-recursor/
 COPY ./docker-entrypoint.sh /usr/bin/
 
-RUN apk add --no-cache boost-context libsodium lua protobuf && \
+RUN apk add --no-cache boost-context boost-filesystem boost-system libsodium lua protobuf && \
     addgroup -S recursor && \
     adduser -S -D -G recursor recursor && \
     echo "pdnslog('Loading Lua Configuration')" > /etc/pdns-recursor/recursor.lua

@@ -1,6 +1,6 @@
 FROM alpine:3.9 AS builder
 
-ARG ADMIN_VERSION="5314718"
+ARG ADMIN_VERSION="latest"
 
 ARG BUILD_DEPENDENCIES="build-base \
     git \
@@ -20,7 +20,7 @@ RUN apk add --no-cache ${BUILD_DEPENDENCIES} && \
 # Download sources
 RUN git clone -n https://github.com/ngoduykhanh/PowerDNS-Admin.git /build && \
     cd /build && \
-    git checkout ${ADMIN_VERSION}
+    git checkout $([ "${ADMIN_VERSION}" = "latest" ] && echo "master" || echo "${ADMIN_VERSION}")
 
 WORKDIR /build
 

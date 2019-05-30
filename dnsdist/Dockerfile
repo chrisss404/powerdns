@@ -1,6 +1,7 @@
 FROM alpine AS builder
 
-ARG DNSDIST_VERSION="1.3.3"
+ARG DNSDIST_VERSION="latest"
+ARG H2O_VERSION="2.2.5"
 
 ARG COMPILER_FLAGS="-Os -fomit-frame-pointer"
 ARG LINKER_FLAGS="-Wl,--as-needed"
@@ -26,6 +27,15 @@ RUN apk add --no-cache \
         ragel \
         re2-dev
 
+# Compile and install libh2o
+RUN wget https://github.com/h2o/h2o/archive/v${H2O_VERSION}.tar.gz -O - | tar -xz && \
+    cd h2o-${H2O_VERSION} && \
+    cmake -DCMAKE_INSTALL_PREFIX=/usr -DWITH_BUNDLED_SSL=off . && \
+    make && \
+    make install && \
+    cp /usr/lib64/libh2o-evloop.a /usr/lib/libh2o-evloop.a && \
+    cp /usr/lib64/pkgconfig/libh2o-evloop.pc /usr/lib/pkgconfig/libh2o-evloop.pc
+
 # Download sources
 RUN git clone -n https://github.com/PowerDNS/pdns.git /build && \
     cd /build && \
@@ -39,12 +49,13 @@ RUN export BUILDER_VERSION=$([ "${DNSDIST_VERSION}" = "latest" ] && echo `date +
     autoreconf -vif && \
     CFLAGS=${COMPILER_FLAGS} CXXFLAGS=${COMPILER_FLAGS} LDFLAGS=${LINKER_FLAGS} ./configure \
             --sysconfdir=/etc/dnsdist \
-            --enable-dns-over-tls \
             --enable-dnscrypt \
+            --enable-dns-over-https \
+            --enable-dns-over-tls \
+            --with-libsodium \
             --with-lua \
-            --enable-libsodium \
-            --enable-re2 \
             --with-protobuf \
+            --with-re2 \
             --disable-shared \
             --enable-static && \
     make dist -j $(nproc) && \
@@ -66,7 +77,7 @@ RUN apk add --no-cache libedit libsodium lua protobuf re2 && \
 
 VOLUME ["/var/lib/dnsdist"]
 
-EXPOSE 53/tcp 53/udp 853/tcp 8083/tcp 8443/tcp 8443/udp
+EXPOSE 53/tcp 53/udp 443/tcp 853/tcp 8083/tcp 8443/tcp 8443/udp
 
 HEALTHCHECK CMD ["dnsdist", "-e", "showVersion()", "||", "exit", "1"]
 ENTRYPOINT ["docker-entrypoint.sh"]

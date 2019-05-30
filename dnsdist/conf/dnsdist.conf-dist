@@ -40,6 +40,25 @@ if dnscrypt ~= nil and string.lower(dnscrypt) == "yes" then
     addDNSCryptBind("0.0.0.0:8443", dnscrypt_provider_name, "/var/lib/dnsdist/resolver.cert", "/var/lib/dnsdist/resolver.key", {doTCP=true})
 end
 
+-- Listen for DNS-over-HTTPS queries
+local doh = os.getenv("DNSDIST_DNS_OVER_HTTPS")
+if doh ~= nil and string.lower(doh) == "yes" then
+    local doh_domain = os.getenv("DNSDIST_DNS_OVER_HTTPS_DOMAIN")
+    local doh_path = os.getenv("DNSDIST_DNS_OVER_HTTPS_PATH")
+    if doh_path == nil then
+        doh_path = "/dns-query"
+    end
+
+    local doh_fullchain = "/etc/nginx/certs/" .. doh_domain .. "/fullchain.pem"
+    local doh_key = "/etc/nginx/certs/" .. doh_domain .. "/key.pem"
+
+    if file_exists(doh_fullchain) and file_exists(doh_key) then
+        addDOHLocal("0.0.0.0:443", doh_fullchain, doh_key, { doh_path })
+    else
+        errlog("Fatal error: Unable to find certificates for the DOH context on 0.0.0.0:443.")
+    end
+end
+
 -- Listen for DNS-over-TLS queries
 local dot = os.getenv("DNSDIST_DNS_OVER_TLS")
 if dot ~= nil and string.lower(dot) == "yes" then

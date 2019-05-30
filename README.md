@@ -71,7 +71,7 @@ Then you can do the following:
     # get DNSCrypt provider public key fingerprint
     docker-compose -f secure-recursor.yml exec dnsdist dnsdist -e 'printDNSCryptProviderFingerprint("/var/lib/dnsdist/providerPublic.key")'
     
-    # create DNS stamp using python dnsstamps library
+    # create DNS stamp using python dnsstamps library or visit https://dnscrypt.info/stamps
     dnsstamp.py dnscrypt -s -a 1.2.3.4:8443 -n 2.dnscrypt-cert.example.com -k 2251:468C:FE4C:C39F:9DF3:C2BA:7C95:ED8F:94F6:06BC:7A24:0493:D168:DE9E:7682:E8AD
 
 ### Connect using DNSCrypt Proxy
@@ -120,9 +120,9 @@ Create `private-authoritative.yml` like this:
           - admin-db
           - authoritative
         environment:
-          - VIRTUAL_PROTO=uwsgi
           - VIRTUAL_HOST=admin.example.com
           - VIRTUAL_PORT=3031
+          - VIRTUAL_PROTO=uwsgi
           - ADMIN_PDNS_API_KEY=api-secret-authoritative
           - ADMIN_USER_PASSWORD=very-secret
         networks:
@@ -280,6 +280,9 @@ Then you can do the following:
 | DNSDIST_API_KEY                | Static pre-shared authentication key for access to the REST API (default: pdns) |
 | DNSDIST_DNSCRYPT               | Listen for DNSCrypt queries on port 8443 (default: no)                          |
 | DNSDIST_DNSCRYPT_PROVIDER_NAME | DNSCrypt provider name (default: 2.dnscrypt-cert.example.com)                   |
+| DNSDIST_DNS_OVER_HTTPS         | Listen for DNS-over-HTTPS queries on port 443 (default: no)                     |
+| DNSDIST_DNS_OVER_HTTPS_DOMAIN  | Domain name of DNS server.                                                      |
+| DNSDIST_DNS_OVER_HTTPS_PATH    | The absolute URI path.                                                          |
 | DNSDIST_DNS_OVER_TLS           | Listen for DNS-over-TLS queries on port 853 (default: no)                       |
 | DNSDIST_DNS_OVER_TLS_DOMAIN    | Domain name of DNS server.                                                      |
 | DNSDIST_PLAIN                  | Listen for plain DNS queries on port 53 (default: no)                           |

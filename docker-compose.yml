@@ -1,0 +1,61 @@
+version: '2'
+
+services:
+
+  admin:
+    build: admin
+    depends_on:
+      - admin-db
+      - gateway
+    environment:
+      - VIRTUAL_PROTO=uwsgi
+      - VIRTUAL_HOST=admin.local
+      - VIRTUAL_PORT=3031
+
+  admin-db:
+    image: postgres:10.4-alpine
+    environment:
+      - POSTGRES_DB=pda
+      - POSTGRES_INITDB_ARGS=--data-checksums
+      - POSTGRES_PASSWORD=pda
+      - POSTGRES_USER=pda
+
+  authoritative:
+    build: authoritative
+    depends_on:
+      - authoritative-db
+    ports:
+      - "1053:53/tcp"
+      - "1053:53/udp"
+
+  authoritative-db:
+    image: postgres:10.4-alpine
+    environment:
+      - POSTGRES_DB=pdns
+      - POSTGRES_INITDB_ARGS=--data-checksums
+      - POSTGRES_PASSWORD=pdns
+      - POSTGRES_USER=pdns
+
+  gateway:
+    image: jwilder/nginx-proxy:alpine
+    volumes:
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+    ports:
+      - "80:80"
+
+  dnsdist:
+    build: dnsdist
+    environment:
+      - DNSDIST_PLAIN=yes
+      - DNSDIST_QUIET=no
+    ports:
+      - "1053:53/tcp"
+      - "1053:53/udp"
+
+  recursor:
+    build: recursor
+    environment:
+      - RECURSOR_QUIET=no
+    ports:
+      - "1053:53/tcp"
+      - "1053:53/udp"
