@@ -1,0 +1,58 @@
+version: '2'
+
+services:
+
+  gateway:
+    restart: always
+    image: jwilder/nginx-proxy:alpine
+    volumes:
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - "/etc/nginx/vhost.d"
+      - "/usr/share/nginx/html"
+      - "/etc/nginx/certs"
+    ports:
+      - "80:80"
+
+  letsencrypt:
+    restart: always
+    image: jrcs/letsencrypt-nginx-proxy-companion:latest
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    volumes_from:
+      - gateway
+
+  dnsdist:
+    restart: always
+    image: chrisss404/powerdns:latest-dnsdist
+    environment:
+      - VIRTUAL_HOST=dot.example.com
+      - VIRTUAL_PORT=9999
+      - LETSENCRYPT_HOST=dot.example.com
+      - LETSENCRYPT_EMAIL=you@example.com
+      - DNSDIST_DNSCRYPT=yes
+      - DNSDIST_DNS_OVER_TLS=yes
+      - DNSDIST_DNS_OVER_TLS_DOMAIN=dot.example.com
+    volumes:
+      - "./blacklist.txt:/etc/dnsdist/blacklist.txt:ro"
+    volumes_from:
+      - gateway:ro
+    networks:
+      - recursor
+    ports:
+      - "853:853/tcp"
+      - "8443:8443/udp"
+      - "8443:8443/tcp"
+
+  recursor:
+    restart: always
+    image: chrisss404/powerdns:latest-recursor
+    networks:
+      recursor:
+        ipv4_address: 172.31.117.117
+
+networks:
+  recursor:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.31.117.0/24"

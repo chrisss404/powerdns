@@ -1,5 +1,60 @@
 
-## Admin
+## Private Recursor
+
+    # start secure recursor (restart dnsdist when let's encrypt certificate is ready)
+    docker-compose -f secure-recursor.yml up
+    
+    # get DNSCrypt provider public key fingerprint
+    docker-compose -f secure-recursor.yml exec dnsdist dnsdist -e 'printDNSCryptProviderFingerprint("/var/lib/dnsdist/providerPublic.key")'
+    
+    # create DNS stamp using python dnsstamps library
+    dnsstamp.py dnscrypt -s -a 1.2.3.4:8443 -n 2.dnscrypt-cert.example.com -k 2251:468C:FE4C:C39F:9DF3:C2BA:7C95:ED8F:94F6:06BC:7A24:0493:D168:DE9E:7682:E8AD
+
+### Connect using DNSCrypt Proxy
+
+* Install dnscrypt proxy as described [here](https://github.com/jedisct1/dnscrypt-proxy/wiki/Installation#os-specific-instructions).
+* Configure dnscrypt proxy to use previously created dnsstamp, e.g.: vim /etc/dnscrypt-proxy/dnscrypt-proxy.toml
+
+```diff
+-server_names = ['cisco', 'cloudflare']
++server_names = ['example']
+
++  [static.'example']
++  stamp = 'sdns://AQEAAAAAAAAADDEuMi4zLjQ6ODQ0MyAiUUaM_kzDn53zwrp8le2PlPYGvHokBJPRaN6edoLorRsyLmRuc2NyeXB0LWNlcnQuZXhhbXBsZS5jb20'
+```
+
+### Connect using Android
+
+* Go to `Settings` > `Network & Internet` > `Advanced` > `Private DNS` > `Private DNS provider hostname`
+* Enter DoT hostname: `dot.example.com`
+
+![Image of Android DoT configuration](android-dot.png)
+
+
+## Private Authoritative Server
+
+    # start powerdns stack
+    docker-compose -f private-authoritative.yml up
+    
+    # send DNS queries
+    dig -p 1053 example.com
+
+    # PowerDNS admin interface
+    http://admin.example.com
+    
+    # PowerDNS authoritative stats
+    http://localhost:8081
+
+    # PowerDNS recursor stats
+    http://localhost:8082
+
+    # PowerDNS dnsdist stats
+    http://localhost:8083
+
+
+## Settings
+
+### Admin
 
 | Env-Variable         | Description                                              |
 | -------------------- | -------------------------------------------------------- |
@@ -18,7 +73,7 @@
 | ADMIN_USER_PASSWORD  | Password of admin user (default: admin)                  |
 
 
-## Authoritative
+### Authoritative
 
 | Env-Variable                     | Description                                                                     |
 | -------------------------------- | ------------------------------------------------------------------------------- |
@@ -36,7 +91,7 @@
 | AUTHORITATIVE_WEBSERVER_PASSWORD | Password required for accessing the webserver (default: pdns)                   |
 
 
-## Dnsdist
+### Dnsdist
 
 | Env-Variable                   | Description                                                                     |
 | ------------------------------ | ------------------------------------------------------------------------------- |
@@ -51,7 +106,7 @@
 | DNSDIST_WEBSERVER_PASSWORD     | Password required for accessing the webserver (default: pdns)                   |
 
 
-## Recursor
+### Recursor
 
 | Env-Variable                   | Description                                                                                       |
 | ------------------------------ | ------------------------------------------------------------------------------------------------- |
@@ -64,3 +119,4 @@
 | RECURSOR_TRUST_ANCHORS         | Trust anchors for private zones when using DNSSEC validation, comma separated domain=ds-key pairs |
 | RECURSOR_WEBSERVER             | Start a webserver for REST API on port 8082 (default: no)                                         |
 | RECURSOR_WEBSERVER_PASSWORD    | Password required for accessing the webserver (default: pdns)                                     |
+
