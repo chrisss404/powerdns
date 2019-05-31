@@ -1,3 +1,14 @@
+# Introduction
+
+Get your own secure nameserver up and running within minutes, using this dockerized installation of the PowerDNS nameserver.
+
+There are two PowerDNS nameserver products: the Authoritative Server and the Recursor. While most other nameservers fully combine these functions, PowerDNS offers them separately, but can mix both authoritative and recursive usage seamlessly.
+
+The Authoritative Server will answer questions about domains it knows about, but will not go out on the net to resolve queries about other domains. When the Authoritative Server answers a question, it comes out of the database, and can be trusted as being authoritative. There is no way to pollute the cache or to confuse the daemon.
+
+The Recursor, conversely, by default has no knowledge of domains itself, but will always consult other authoritative servers to answer questions given to it.
+
+Source code of PowerDNS here: https://github.com/PowerDNS/pdns
 
 ## Private Recursor
 
