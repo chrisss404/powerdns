@@ -1,7 +1,7 @@
 
 ## Private Recursor
 
-Create `secure-recursor.yml` like this:
+Create `private-recursor.yml` like this:
 
     version: '2'
     
@@ -66,10 +66,10 @@ Create `blacklist.txt` like this:
 Then you can do the following:
 
     # start secure recursor (restart dnsdist after the let's encrypt certificate is created)
-    docker-compose -f secure-recursor.yml up
+    docker-compose -f private-recursor.yml up
     
     # get DNSCrypt provider public key fingerprint
-    docker-compose -f secure-recursor.yml exec dnsdist dnsdist -e 'printDNSCryptProviderFingerprint("/var/lib/dnsdist/providerPublic.key")'
+    docker-compose -f private-recursor.yml exec dnsdist dnsdist -e 'printDNSCryptProviderFingerprint("/var/lib/dnsdist/providerPublic.key")'
     
     # create DNS stamp using python dnsstamps library or visit https://dnscrypt.info/stamps
     dnsstamp.py dnscrypt -s -a 1.2.3.4:8443 -n 2.dnscrypt-cert.example.com -k 2251:468C:FE4C:C39F:9DF3:C2BA:7C95:ED8F:94F6:06BC:7A24:0493:D168:DE9E:7682:E8AD
