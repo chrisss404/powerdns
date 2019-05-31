@@ -55,7 +55,7 @@ if doh ~= nil and string.lower(doh) == "yes" then
     if file_exists(doh_fullchain) and file_exists(doh_key) then
         addDOHLocal("0.0.0.0:443", doh_fullchain, doh_key, { doh_path })
     else
-        errlog("Fatal error: Unable to find certificates for the DOH context on 0.0.0.0:443.")
+        errlog("Fatal error: Unable to find certificates for the DoH context on 0.0.0.0:443.")
     end
 end
 

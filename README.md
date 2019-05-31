@@ -145,6 +145,7 @@ Create `private-authoritative.yml` like this:
         depends_on:
           - authoritative-db
         environment:
+          - AUTHORITATIVE_API=yes
           - AUTHORITATIVE_API_KEY=api-secret-authoritative
           - AUTHORITATIVE_WEBSERVER=yes
           - AUTHORITATIVE_WEBSERVER_PASSWORD=web-secret-authoritative
@@ -282,7 +283,7 @@ Then you can do the following:
 | DNSDIST_DNSCRYPT_PROVIDER_NAME | DNSCrypt provider name (default: 2.dnscrypt-cert.example.com)                   |
 | DNSDIST_DNS_OVER_HTTPS         | Listen for DNS-over-HTTPS queries on port 443 (default: no)                     |
 | DNSDIST_DNS_OVER_HTTPS_DOMAIN  | Domain name of DNS server.                                                      |
-| DNSDIST_DNS_OVER_HTTPS_PATH    | The absolute URI path.                                                          |
+| DNSDIST_DNS_OVER_HTTPS_PATH    | The absolute URI path. (default: /dns-query)                                    |
 | DNSDIST_DNS_OVER_TLS           | Listen for DNS-over-TLS queries on port 853 (default: no)                       |
 | DNSDIST_DNS_OVER_TLS_DOMAIN    | Domain name of DNS server.                                                      |
 | DNSDIST_PLAIN                  | Listen for plain DNS queries on port 53 (default: no)                           |

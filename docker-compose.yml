@@ -8,9 +8,9 @@ services:
       - admin-db
       - gateway
     environment:
-      - VIRTUAL_PROTO=uwsgi
       - VIRTUAL_HOST=admin.local
       - VIRTUAL_PORT=3031
+      - VIRTUAL_PROTO=uwsgi
 
   admin-db:
     image: postgres:10.4-alpine
