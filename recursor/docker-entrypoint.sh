@@ -21,6 +21,7 @@ if [ "$1" = "pdns_recursor" ] && [ ! -f /etc/pdns-recursor/recursor.conf ]; then
     sed -i "s|# local-port=53|local-port=53|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# lua-config-file=|lua-config-file=/etc/pdns-recursor/recursor.lua|g" /etc/pdns-recursor/recursor.conf
 
+    sed -i "s|# query-local-address6=|query-local-address6=::|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# quiet=|quiet=${RECURSOR_QUIET:-no}|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# version-string=.*|version-string=anonymous|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# trace=off|trace=fail|g" /etc/pdns-recursor/recursor.conf
