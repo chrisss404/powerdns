@@ -58,6 +58,8 @@ Create `private-recursor.yml` like this:
     
       recursor:
         image: chrisss404/powerdns:latest-recursor
+        sysctls:
+          - net.ipv6.route.max_size=16384
         networks:
           recursor:
             ipv4_address: 172.31.117.117
@@ -202,6 +204,8 @@ Create `private-authoritative.yml` like this:
           - RECURSOR_TRUST_ANCHORS=sys=54970 13 1 27efe1c1a790c3cbb43b947d6d6dfac62507097e
           - RECURSOR_WEBSERVER=yes
           - RECURSOR_WEBSERVER_PASSWORD=web-secret-recursor
+        sysctls:
+          - net.ipv6.route.max_size=16384
         networks:
           recursor:
             ipv4_address: 172.31.117.117

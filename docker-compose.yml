@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 
 services:
 
@@ -56,6 +56,8 @@ services:
     build: recursor
     environment:
       - RECURSOR_QUIET=no
+    sysctls:
+      - net.ipv6.route.max_size=16384
     ports:
       - "1053:53/tcp"
       - "1053:53/udp"
