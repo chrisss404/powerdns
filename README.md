@@ -14,7 +14,7 @@ Source code of PowerDNS here: https://github.com/PowerDNS/pdns
 
 Create `private-recursor.yml` like this:
 
-    version: '2'
+    version: '2.1'
     
     services:
     
@@ -113,7 +113,7 @@ Then you can do the following:
 
 Create `private-authoritative.yml` like this:
 
-    version: '2'
+    version: '2.1'
     
     services:
     
@@ -283,7 +283,9 @@ Then you can do the following:
 | AUTHORITATIVE_DB_PASS            | Postgres password (default: pdns)                                               |
 | AUTHORITATIVE_DB_PORT            | Postgres port (default: 5432)                                                   |
 | AUTHORITATIVE_DB_USER            | Postgres username (default: pdns)                                               |
+| AUTHORITATIVE_EXPAND_ALIAS       | Expand ALIAS records (default: no)                                              |
 | AUTHORITATIVE_MASTER             | Act as a master (default: yes)                                                  |
+| AUTHORITATIVE_RESOLVER           | Use this resolver for ALIAS and the internal stub resolver (default: no)        |
 | AUTHORITATIVE_SLAVE              | Act as a slave (default: no)                                                    |
 | AUTHORITATIVE_WEBSERVER          | Start a webserver for monitoring on port 8081 (default: no)                     |
 | AUTHORITATIVE_WEBSERVER_PASSWORD | Password required for accessing the webserver (default: pdns)                   |
