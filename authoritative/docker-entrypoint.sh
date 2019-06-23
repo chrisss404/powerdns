@@ -21,6 +21,7 @@ if [ "$1" = "pdns_server" ] && [ ! -f /etc/pdns/pdns.conf ]; then
     sed -i "s|# slave=no|slave=${AUTHORITATIVE_SLAVE:-no}|g" /etc/pdns/pdns.conf
     sed -i "s|# version-string=.*|version-string=anonymous|g" /etc/pdns/pdns.conf
 
+    sed -i "s|# dname-processing=no|dname-processing=${AUTHORITATIVE_DNAME_PROCESSING:-no}|g" /etc/pdns/pdns.conf
     sed -i "s|# expand-alias=no|expand-alias=${AUTHORITATIVE_EXPAND_ALIAS:-no}|g" /etc/pdns/pdns.conf
     sed -i "s|# resolver=no|resolver=${AUTHORITATIVE_RESOLVER:-no}|g" /etc/pdns/pdns.conf
 

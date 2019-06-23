@@ -283,6 +283,7 @@ Then you can do the following:
 | AUTHORITATIVE_DB_PASS            | Postgres password (default: pdns)                                               |
 | AUTHORITATIVE_DB_PORT            | Postgres port (default: 5432)                                                   |
 | AUTHORITATIVE_DB_USER            | Postgres username (default: pdns)                                               |
+| AUTHORITATIVE_DNAME_PROCESSING   | If we should support DNAME records (default: no)                                |
 | AUTHORITATIVE_EXPAND_ALIAS       | Expand ALIAS records (default: no)                                              |
 | AUTHORITATIVE_MASTER             | Act as a master (default: yes)                                                  |
 | AUTHORITATIVE_RESOLVER           | Use this resolver for ALIAS and the internal stub resolver (default: no)        |
