@@ -1,6 +1,6 @@
 FROM alpine:3.9 AS builder
 
-ARG PDNS_VERSION="latest"
+ARG PDNS_VERSION="4.1.10"
 
 ARG COMPILER_FLAGS="-Os -fomit-frame-pointer"
 ARG LINKER_FLAGS="-Wl,--as-needed"
@@ -41,7 +41,7 @@ RUN export BUILDER_VERSION=$([ "${PDNS_VERSION}" = "latest" ] && echo `date +%Y-
     CFLAGS=${COMPILER_FLAGS} CXXFLAGS=${COMPILER_FLAGS} LDFLAGS=${LINKER_FLAGS} ./configure \
             --sysconfdir=/etc/pdns \
             --with-dynmodules= \
-            --with-libsodium \
+            --enable-libsodium \
             --with-modules="gpgsql" \
             --with-protobuf \
             --disable-shared \
@@ -59,7 +59,7 @@ COPY --from=builder /usr/local/share/doc/pdns /usr/share/doc/pdns/
 COPY --from=builder /etc/pdns /etc/pdns/
 COPY ./docker-entrypoint.sh /usr/bin/
 
-RUN apk add --no-cache boost-program_options libcurl libsodium lua postgresql-client postgresql-libs protobuf && \
+RUN apk add --no-cache boost-program_options libsodium lua postgresql-client postgresql-libs protobuf && \
     addgroup -S pdns && \
     adduser -S -D -G pdns pdns && \
     mkdir /etc/pdns/conf.d
