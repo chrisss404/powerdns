@@ -1,6 +1,6 @@
 FROM alpine AS builder
 
-ARG DNSDIST_VERSION="latest"
+ARG DNSDIST_VERSION="1.4.0"
 ARG H2O_VERSION="2.2.5"
 
 ARG COMPILER_FLAGS="-Os -fomit-frame-pointer"
