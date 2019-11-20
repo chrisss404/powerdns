@@ -1,6 +1,6 @@
 FROM alpine:3.9 AS builder
 
-ARG ADMIN_VERSION="latest"
+ARG ADMIN_VERSION="0b2eb0f"
 
 ARG BUILD_DEPENDENCIES="build-base \
     git \
