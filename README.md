@@ -2,17 +2,13 @@
 
 Get your own secure nameserver up and running within minutes, using this dockerized installation of the PowerDNS nameserver.
 
-There are two PowerDNS nameserver products: the Authoritative Server and the Recursor. While most other nameservers fully combine these functions, PowerDNS offers them separately, but can mix both authoritative and recursive usage seamlessly.
-
-The Authoritative Server will answer questions about domains it knows about, but will not go out on the net to resolve queries about other domains. When the Authoritative Server answers a question, it comes out of the database, and can be trusted as being authoritative. There is no way to pollute the cache or to confuse the daemon.
-
-The Recursor, conversely, by default has no knowledge of domains itself, but will always consult other authoritative servers to answer questions given to it.
-
 Source code of PowerDNS here: https://github.com/PowerDNS/pdns
 
 ## Private Recursor
 
-Create `private-recursor.yml` like this:
+Simple example of an ad blocking private recursor that is listening for DNSCrypt and DNS-over-TLS (DoT) queries. Easy setup for any desktop OS using [dnscrypt-proxy](https://github.com/jedisct1/dnscrypt-proxy/wiki/Installation#os-specific-instructions) and Android 9 has native support for [DoT](https://developers.google.com/speed/public-dns/docs/using#android).
+
+Create [private-recursor.yml](private-recursor.yml) like this:
 
     version: '2.1'
     
@@ -111,40 +107,30 @@ Then you can do the following:
 
 ## Private Authoritative Server
 
-Create `private-authoritative.yml` like this:
+Simple example of full powerdns stack including private authoritative nameserver and admin interface for editing DNS records.
+
+Create [private-authoritative.yml](private-authoritative.yml) like this:
 
     version: '2.1'
     
     services:
-    
-      gateway:
-        image: jwilder/nginx-proxy:alpine
-        volumes:
-          - "/var/run/docker.sock:/tmp/docker.sock:ro"
-        networks:
-          - gateway
-        ports:
-          - "80:80"
-    
+
       admin:
         image: chrisss404/powerdns:latest-admin
         depends_on:
-          - gateway
           - admin-db
           - authoritative
         environment:
-          - VIRTUAL_HOST=admin.example.com
-          - VIRTUAL_PORT=3031
-          - VIRTUAL_PROTO=uwsgi
           - ADMIN_PDNS_API_KEY=api-secret-authoritative
           - ADMIN_USER_PASSWORD=very-secret
         networks:
-          - gateway
           - admin-db
           - authoritative
+        ports:
+          - "80:3031"
     
       admin-db:
-        image: postgres:10.4-alpine
+        image: postgres:12.1-alpine
         environment:
           - POSTGRES_DB=pda
           - POSTGRES_INITDB_ARGS=--data-checksums
@@ -170,7 +156,7 @@ Create `private-authoritative.yml` like this:
           - "8081:8081/tcp"
     
       authoritative-db:
-        image: postgres:10.4-alpine
+        image: postgres:12.1-alpine
         environment:
           - POSTGRES_DB=pdns
           - POSTGRES_INITDB_ARGS=--data-checksums
@@ -214,7 +200,6 @@ Create `private-authoritative.yml` like this:
           - "8082:8082/tcp"
     
     networks:
-      gateway:
       admin-db:
       authoritative:
         ipam:
@@ -238,7 +223,7 @@ Then you can do the following:
     dig -p 1053 example.com
 
     # PowerDNS admin interface
-    http://admin.example.com
+    http://localhost:80
     
     # PowerDNS authoritative stats
     http://localhost:8081
@@ -263,7 +248,7 @@ Then you can do the following:
 | ADMIN_DB_USER        | Postgres username (default: pda)                         |
 | ADMIN_PDNS_API_KEY   | PowerDNS API key (default: pdns)                         |
 | ADMIN_PDNS_API_URL   | PowerDNS API URL (default: http://authoritative:8081/)   |
-| ADMIN_PDNS_VERSION   | PowerDNS version number (default: 4.1.8)                 |
+| ADMIN_PDNS_VERSION   | PowerDNS version number (default: 4.2.1)                 |
 | ADMIN_SIGNUP_ENABLED | Allow users to sign up (default: no)                     |
 | ADMIN_USER_EMAIL     | Email address of admin user (default: admin@example.org) |
 | ADMIN_USER_FIRSTNAME | First name of admin user (default: Administrator)        |

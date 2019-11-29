@@ -23,6 +23,7 @@ if [ "$1" = "pdns_recursor" ] && [ ! -f /etc/pdns-recursor/recursor.conf ]; then
 
     sed -i "s|# query-local-address6=|query-local-address6=::|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# quiet=|quiet=${RECURSOR_QUIET:-no}|g" /etc/pdns-recursor/recursor.conf
+    sed -i "s|# socket-dir=|socket-dir=/var/run|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# version-string=.*|version-string=anonymous|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# trace=off|trace=fail|g" /etc/pdns-recursor/recursor.conf
 

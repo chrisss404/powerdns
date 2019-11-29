@@ -1,0 +1,101 @@
+version: '2.1'
+
+services:
+
+  admin:
+    image: chrisss404/powerdns:latest-admin
+    depends_on:
+      - admin-db
+      - authoritative
+    environment:
+      - ADMIN_PDNS_API_KEY=api-secret-authoritative
+      - ADMIN_USER_PASSWORD=very-secret
+    networks:
+      - admin-db
+      - authoritative
+    ports:
+      - "80:3031"
+
+  admin-db:
+    image: postgres:12.1-alpine
+    environment:
+      - POSTGRES_DB=pda
+      - POSTGRES_INITDB_ARGS=--data-checksums
+      - POSTGRES_PASSWORD=pda
+      - POSTGRES_USER=pda
+    networks:
+      - admin-db
+
+  authoritative:
+    image: chrisss404/powerdns:latest-authoritative
+    depends_on:
+      - authoritative-db
+    environment:
+      - AUTHORITATIVE_API=yes
+      - AUTHORITATIVE_API_KEY=api-secret-authoritative
+      - AUTHORITATIVE_WEBSERVER=yes
+      - AUTHORITATIVE_WEBSERVER_PASSWORD=web-secret-authoritative
+    networks:
+      authoritative:
+        ipv4_address: 172.31.118.118
+      authoritative-db:
+    ports:
+      - "8081:8081/tcp"
+
+  authoritative-db:
+    image: postgres:12.1-alpine
+    environment:
+      - POSTGRES_DB=pdns
+      - POSTGRES_INITDB_ARGS=--data-checksums
+      - POSTGRES_PASSWORD=pdns
+      - POSTGRES_USER=pdns
+    networks:
+      - authoritative-db
+
+  dnsdist:
+    image: chrisss404/powerdns:latest-dnsdist
+    environment:
+      - DNSDIST_API_KEY=api-secret-dnsdist
+      - DNSDIST_PLAIN=yes
+      - DNSDIST_QUIET=no
+      - DNSDIST_WEBSERVER=yes
+      - DNSDIST_WEBSERVER_PASSWORD=web-secret-dnsdist
+    networks:
+      - recursor
+    ports:
+      - "1053:53/tcp"
+      - "1053:53/udp"
+      - "8083:8083/tcp"
+
+  recursor:
+    image: chrisss404/powerdns:latest-recursor
+    environment:
+      - RECURSOR_API_KEY=api-secret-recursor
+      - RECURSOR_DNSSEC=validate
+      - RECURSOR_FORWARD_ZONES=sys=172.31.118.118
+      - RECURSOR_QUIET=no
+      - RECURSOR_TRUST_ANCHORS=sys=54970 13 1 27efe1c1a790c3cbb43b947d6d6dfac62507097e
+      - RECURSOR_WEBSERVER=yes
+      - RECURSOR_WEBSERVER_PASSWORD=web-secret-recursor
+    sysctls:
+      - net.ipv6.route.max_size=16384
+    networks:
+      recursor:
+        ipv4_address: 172.31.117.117
+      authoritative:
+    ports:
+      - "8082:8082/tcp"
+
+networks:
+  admin-db:
+  authoritative:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.31.118.0/24"
+  authoritative-db:
+  recursor:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.31.117.0/24"

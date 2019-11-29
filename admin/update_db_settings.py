@@ -6,8 +6,8 @@ import os
 if __name__ == '__main__':
     Setting().set('pdns_api_url', os.environ.get('ADMIN_PDNS_API_URL', 'http://authoritative:8081/'))
     Setting().set('pdns_api_key', os.environ.get('ADMIN_PDNS_API_KEY', 'pdns'))
-    Setting().set('pdns_version', os.environ.get('ADMIN_PDNS_VERSION', '4.1.8'))
-    Setting().set('signup_enabled', True if os.environ.get('ADMIN_SIGNUP_ENABLED', 'no').lower() == 'yes' else False)
+    Setting().set('pdns_version', os.environ.get('ADMIN_PDNS_VERSION', '4.2.1'))
+    Setting().set('signup_enabled', os.environ.get('ADMIN_SIGNUP_ENABLED', 'no').lower() == 'yes')
 
     firstname = os.environ.get('ADMIN_USER_FIRSTNAME', 'Administrator')
     lastname = os.environ.get('ADMIN_USER_LASTNAME', 'User')

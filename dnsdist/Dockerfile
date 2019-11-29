@@ -63,7 +63,7 @@ RUN export BUILDER_VERSION=$([ "${DNSDIST_VERSION}" = "latest" ] && echo `date +
 
 
 # Build image
-FROM alpine:3.9
+FROM alpine:3.10
 
 COPY --from=builder /usr/local/bin /usr/bin/
 COPY ./docker-entrypoint.sh /usr/bin/

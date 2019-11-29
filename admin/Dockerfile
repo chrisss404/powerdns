@@ -1,4 +1,4 @@
-FROM alpine:3.9 AS builder
+FROM alpine:3.10 AS builder
 
 ARG ADMIN_VERSION="latest"
 
@@ -67,10 +67,10 @@ RUN pip install pip-autoremove && \
 
 
 # Build image
-FROM alpine:3.9
+FROM alpine:3.10
 
 COPY --from=builder /usr/bin/flask /usr/bin/
-COPY --from=builder /usr/lib/python3.6/site-packages /usr/lib/python3.6/site-packages/
+COPY --from=builder /usr/lib/python3.7/site-packages /usr/lib/python3.7/site-packages/
 COPY --from=builder /var/www/pdns-admin /var/www/pdns-admin/
 COPY ./docker-entrypoint.sh /usr/bin/
 
@@ -88,6 +88,6 @@ EXPOSE 3031/tcp
 HEALTHCHECK CMD ["uwsgi", "--connect-and-read", "127.0.0.1:1717", "||", "exit", "1"]
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD [ "uwsgi", "--master", "--processes=4", "--threads=2", "--buffer-size", "32768", \
-        "--socket", ":3031", "--stats", "127.0.0.1:1717", "--protocol", "uwsgi", \
+        "--http-socket", ":3031", "--stats", "127.0.0.1:1717", \
         "--uid", "pda", "--gid", "pda", \
         "--manage-script-name", "--plugin", "python3", "--mount", "/=run:app" ]
