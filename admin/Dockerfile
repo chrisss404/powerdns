@@ -72,21 +72,20 @@ FROM alpine:3.10
 
 ENV FLASK_APP=/var/www/pdns-admin/powerdnsadmin/__init__.py
 
+RUN apk add --no-cache postgresql-client py3-gunicorn py3-psycopg2 xmlsec && \
+    addgroup -S pda && \
+    adduser -S -D -G pda pda
+
 COPY --from=builder /usr/bin/flask /usr/bin/
 COPY --from=builder /usr/lib/python3.7/site-packages /usr/lib/python3.7/site-packages/
-COPY --from=builder /var/www/pdns-admin /var/www/pdns-admin/
+COPY --from=builder --chown=pda:pda /var/www/pdns-admin /var/www/pdns-admin/
 COPY ./docker-entrypoint.sh /usr/bin/
 
 WORKDIR /var/www/pdns-admin
-
-RUN apk add --no-cache postgresql-client py3-gunicorn py3-psycopg2 xmlsec && \
-    addgroup -S pda && \
-    adduser -S -D -G pda pda && \
-    chown -R pda:pda /var/www/pdns-admin
 
 EXPOSE 3031/tcp
 
 HEALTHCHECK CMD ["wget", "--output-document=-", "--quiet", "--tries=1", "http://127.0.0.1:3031/"]
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD [ "gunicorn", "powerdnsadmin:create_app()", "--timeout", "120", "--workers", "4", \
-        "--bind", "0.0.0.0:3031", "--log-level", "info"]
+        "--user", "pda", "--group", "pda", "--bind", "0.0.0.0:3031", "--log-level", "info"]
