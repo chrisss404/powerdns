@@ -1,4 +1,4 @@
-FROM alpine AS builder
+FROM alpine:3.10 AS builder
 
 ARG DNSDIST_VERSION="latest"
 ARG H2O_VERSION="2.2.5"
