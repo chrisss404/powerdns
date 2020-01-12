@@ -297,15 +297,18 @@ Then you can do the following:
 
 ### Recursor
 
-| Env-Variable                   | Description                                                                                       |
-| ------------------------------ | ------------------------------------------------------------------------------------------------- |
-| RECURSOR_API_KEY               | Static pre-shared authentication key for access to the REST API (default: pdns)                   |
-| RECURSOR_API_READONLY          | Disallow data modification through the REST API when set (default: yes)                           |
-| RECURSOR_DNSSEC                | DNSSEC mode: off / process-no-validate (default) / process / log-fail / validate                  |
-| RECURSOR_FORWARD_ZONES         | Zones for which we forward queries, comma separated domain=ip pairs                               |
-| RECURSOR_FORWARD_ZONES_RECURSE | Zones for which we forward queries with recursion bit, comma separated domain=ip pairs            |
-| RECURSOR_QUIET                 | Suppress logging of questions and answers (default: no)                                           |
-| RECURSOR_TRUST_ANCHORS         | Trust anchors for private zones when using DNSSEC validation, comma separated domain=ds-key pairs |
-| RECURSOR_WEBSERVER             | Start a webserver for REST API on port 8082 (default: no)                                         |
-| RECURSOR_WEBSERVER_PASSWORD    | Password required for accessing the webserver (default: pdns)                                     |
+| Env-Variable                   | Description                                                                                                 |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| RECURSOR_ALLOW_FROM            | If set, only allow these comma separated netmasks to recurse                                                |
+| RECURSOR_API_KEY               | Static pre-shared authentication key for access to the REST API (default: pdns)                             |
+| RECURSOR_API_READONLY          | Disallow data modification through the REST API when set (default: yes)                                     |
+| RECURSOR_DNSSEC                | DNSSEC mode: off / process-no-validate (default) / process / log-fail / validate                            |
+| RECURSOR_FORWARD_ZONES         | Zones for which we forward queries, comma separated domain=ip pairs                                         |
+| RECURSOR_FORWARD_ZONES_RECURSE | Zones for which we forward queries with recursion bit, comma separated domain=ip pairs                      |
+| RECURSOR_QUIET                 | Suppress logging of questions and answers (default: no)                                                     |
+| RECURSOR_TCP_FAST_OPEN         | Enable TCP Fast Open support on the listening sockets, using the supplied numerical value as the queue size |
+| RECURSOR_THREADS               | Launch this number of threads                                                                               |
+| RECURSOR_TRUST_ANCHORS         | Trust anchors for private zones when using DNSSEC validation, comma separated domain=ds-key pairs           |
+| RECURSOR_WEBSERVER             | Start a webserver for REST API on port 8082 (default: no)                                                   |
+| RECURSOR_WEBSERVER_PASSWORD    | Password required for accessing the webserver (default: pdns)                                               |
 
