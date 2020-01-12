@@ -1,4 +1,4 @@
-FROM alpine AS builder
+FROM alpine:3.10 AS builder
 
 ARG DNSDIST_VERSION="latest"
 ARG H2O_VERSION="2.2.5"
@@ -65,15 +65,15 @@ RUN export BUILDER_VERSION=$([ "${DNSDIST_VERSION}" = "latest" ] && echo `date +
 # Build image
 FROM alpine:3.10
 
-COPY --from=builder /usr/local/bin /usr/bin/
-COPY ./docker-entrypoint.sh /usr/bin/
-COPY ./conf /etc/dnsdist/
-
 RUN apk add --no-cache libedit libsodium lua protobuf re2 && \
     addgroup -S dnsdist && \
     adduser -S -D -G dnsdist dnsdist && \
-    touch /etc/dnsdist/blacklist.txt && \
-    mkdir -p /var/lib/dnsdist
+    mkdir -p /etc/dnsdist /var/lib/dnsdist && \
+    touch /etc/dnsdist/blacklist.txt
+
+COPY --from=builder /usr/local/bin /usr/bin/
+COPY ./docker-entrypoint.sh /usr/bin/
+COPY ./conf /etc/dnsdist/
 
 VOLUME ["/var/lib/dnsdist"]
 

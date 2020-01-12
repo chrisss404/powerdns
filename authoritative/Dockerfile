@@ -47,22 +47,22 @@ RUN export BUILDER_VERSION=$([ "${PDNS_VERSION}" = "latest" ] && echo `date +%Y-
             --disable-shared \
             --enable-static && \
     make dist -j $(nproc) && \
-    make install-strip
+    make install-strip && \
+    mkdir /etc/pdns/conf.d
 
 
 # Build image
 FROM alpine:3.10
+
+RUN apk add --no-cache boost-program_options libcurl libsodium lua postgresql-client postgresql-libs protobuf && \
+    addgroup -S pdns && \
+    adduser -S -D -G pdns pdns
 
 COPY --from=builder /usr/local/bin /usr/bin/
 COPY --from=builder /usr/local/sbin /usr/sbin/
 COPY --from=builder /usr/local/share/doc/pdns /usr/share/doc/pdns/
 COPY --from=builder /etc/pdns /etc/pdns/
 COPY ./docker-entrypoint.sh /usr/bin/
-
-RUN apk add --no-cache boost-program_options libcurl libsodium lua postgresql-client postgresql-libs protobuf && \
-    addgroup -S pdns && \
-    adduser -S -D -G pdns pdns && \
-    mkdir /etc/pdns/conf.d
 
 EXPOSE 53/tcp 53/udp 8081/tcp
 

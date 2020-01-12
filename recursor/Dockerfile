@@ -49,15 +49,14 @@ RUN export BUILDER_VERSION=$([ "${RECURSOR_VERSION}" = "latest" ] && echo `date 
 # Build image
 FROM alpine:3.10
 
+RUN apk add --no-cache boost-context boost-filesystem boost-system libsodium lua protobuf && \
+    addgroup -S recursor && \
+    adduser -S -D -G recursor recursor
+
 COPY --from=builder /usr/local/bin /usr/bin/
 COPY --from=builder /usr/local/sbin /usr/sbin/
 COPY --from=builder /etc/pdns-recursor /etc/pdns-recursor/
 COPY ./docker-entrypoint.sh /usr/bin/
-
-RUN apk add --no-cache boost-context boost-filesystem boost-system libsodium lua protobuf && \
-    addgroup -S recursor && \
-    adduser -S -D -G recursor recursor && \
-    echo "pdnslog('Loading Lua Configuration')" > /etc/pdns-recursor/recursor.lua
 
 EXPOSE 53/tcp 53/udp 8082/tcp
 
