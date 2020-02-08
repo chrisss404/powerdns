@@ -29,6 +29,8 @@ RUN pip install -r requirements.txt
 
 # Prepare assets
 RUN cp /build/config_template.py /build/config.py && \
+    sed -i -e "s|from werkzeug.contrib.fixers import ProxyFix|from werkzeug.middleware.proxy_fix import ProxyFix|g" /build/app/__init__.py && \
+    sed -i -e "s|from werkzeug import secure_filename|from werkzeug.utils import secure_filename|g" /build/app/views.py && \
     yarn install --pure-lockfile && \
     sed -i -e "s|'cssmin','cssrewrite'|'cssmin'|g" /build/app/assets.py && \
     flask assets build
