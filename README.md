@@ -260,9 +260,11 @@ Then you can do the following:
 
 | Env-Variable                     | Description                                                                     |
 | -------------------------------- | ------------------------------------------------------------------------------- |
+| AUTHORITATIVE_ALLOW_AXFR_IPS     | Allow zonetransfers only to these subnets (default: 127.0.0.0/8,::1)            |
 | AUTHORITATIVE_API                | Enable/disable the REST API (default: no)                                       |
 | AUTHORITATIVE_API_KEY            | Static pre-shared authentication key for access to the REST API (default: pdns) |
 | AUTHORITATIVE_API_READONLY       | Disallow data modification through the REST API when set (default: no)          |
+| AUTHORITATIVE_DISABLE_AXFR       | Disable zonetransfers but do allow TCP queries (default: no)                    |
 | AUTHORITATIVE_DB_HOST            | Postgres host (default: authoritative-db)                                       |
 | AUTHORITATIVE_DB_NAME            | Postgres database (default: pdns)                                               |
 | AUTHORITATIVE_DB_PASS            | Postgres password (default: pdns)                                               |

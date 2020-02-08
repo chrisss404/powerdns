@@ -4,11 +4,14 @@ set -e
 if [ "$1" = "pdns_server" ] && [ ! -f /etc/pdns/pdns.conf ]; then
     cp /etc/pdns/pdns.conf-dist /etc/pdns/pdns.conf
 
+    sed -i "s|# allow-axfr-ips=127.0.0.0/8,::1|allow-axfr-ips=${AUTHORITATIVE_ALLOW_AXFR_IPS:-127.0.0.0/8,::1}|g" /etc/pdns/pdns.conf
+
     sed -i "s|# api=no|api=${AUTHORITATIVE_API:-no}|g" /etc/pdns/pdns.conf
     sed -i "s|# api-key=|api-key=${AUTHORITATIVE_API_KEY:-pdns}|g" /etc/pdns/pdns.conf
     sed -i "s|# api-readonly=no|api-readonly=${AUTHORITATIVE_API_READONLY:-no}|g" /etc/pdns/pdns.conf
 
     sed -i "s|# daemon=no|daemon=no|g" /etc/pdns/pdns.conf
+    sed -i "s|# disable-axfr=no|disable-axfr=${AUTHORITATIVE_DISABLE_AXFR:-no}|g" /etc/pdns/pdns.conf
     sed -i "s|# guardian=no|guardian=no|g" /etc/pdns/pdns.conf
     sed -i "s|# write-pid=yes|write-pid=no|g" /etc/pdns/pdns.conf
     sed -i "s|# disable-syslog=no|disable-syslog=yes|g" /etc/pdns/pdns.conf
