@@ -5,6 +5,8 @@ if [ "$1" = "pdns_server" ] && [ ! -f /etc/pdns/pdns.conf ]; then
     cp /etc/pdns/pdns.conf-dist /etc/pdns/pdns.conf
 
     sed -i "s|# allow-axfr-ips=127.0.0.0/8,::1|allow-axfr-ips=${AUTHORITATIVE_ALLOW_AXFR_IPS:-127.0.0.0/8,::1}|g" /etc/pdns/pdns.conf
+    sed -i "s|# allow-notify-from=0.0.0.0/0,::/0|allow-notify-from=${AUTHORITATIVE_ALLOW_NOTIFY_FROM:-0.0.0.0/0,::/0}|g" /etc/pdns/pdns.conf
+    sed -i "s|# also-notify=|also-notify=${AUTHORITATIVE_ALSO_NOTIFY:-}|g" /etc/pdns/pdns.conf
 
     sed -i "s|# api=no|api=${AUTHORITATIVE_API:-no}|g" /etc/pdns/pdns.conf
     sed -i "s|# api-key=|api-key=${AUTHORITATIVE_API_KEY:-pdns}|g" /etc/pdns/pdns.conf
@@ -17,7 +19,7 @@ if [ "$1" = "pdns_server" ] && [ ! -f /etc/pdns/pdns.conf ]; then
     sed -i "s|# disable-syslog=no|disable-syslog=yes|g" /etc/pdns/pdns.conf
     sed -i "s|# disable-tcp=no|disable-tcp=no|g" /etc/pdns/pdns.conf
 
-    sed -i "s|# local-address=0.0.0.0|local-address=0.0.0.0|g" /etc/pdns/pdns.conf
+    sed -i "s|# local-address=0.0.0.0, ::|local-address=0.0.0.0, ::|g" /etc/pdns/pdns.conf
     sed -i "s|# local-port=53|local-port=53|g" /etc/pdns/pdns.conf
 
     sed -i "s|# master=no|master=${AUTHORITATIVE_MASTER:-yes}|g" /etc/pdns/pdns.conf
@@ -27,6 +29,9 @@ if [ "$1" = "pdns_server" ] && [ ! -f /etc/pdns/pdns.conf ]; then
     sed -i "s|# dname-processing=no|dname-processing=${AUTHORITATIVE_DNAME_PROCESSING:-no}|g" /etc/pdns/pdns.conf
     sed -i "s|# expand-alias=no|expand-alias=${AUTHORITATIVE_EXPAND_ALIAS:-no}|g" /etc/pdns/pdns.conf
     sed -i "s|# resolver=no|resolver=${AUTHORITATIVE_RESOLVER:-no}|g" /etc/pdns/pdns.conf
+
+    sed -i "s|# superslave=no|superslave=${AUTHORITATIVE_SUPERSLAVE:-no}|g" /etc/pdns/pdns.conf
+    sed -i "s|# tcp-fast-open=0|tcp-fast-open=${AUTHORITATIVE_TCP_FAST_OPEN:-0}|g" /etc/pdns/pdns.conf
 
     sed -i "s|# webserver=no|webserver=${AUTHORITATIVE_WEBSERVER:-no}|g" /etc/pdns/pdns.conf
     sed -i "s|# webserver-address=127.0.0.1|webserver-address=0.0.0.0|g" /etc/pdns/pdns.conf
@@ -54,11 +59,20 @@ if [ "$1" = "pdns_server" ] && [ ! -f /etc/pdns/pdns.conf ]; then
       attempts=$(expr "${attempts}" + 1)
     done
 
-    if psql "host=${AUTHORITATIVE_DB_HOST:-authoritative-db} dbname=${AUTHORITATIVE_DB_NAME:-pdns} user=${AUTHORITATIVE_DB_USER:-pdns} password=${AUTHORITATIVE_DB_PASS:-pdns} port=${AUTHORITATIVE_DB_PORT:-5432}" -c "SELECT 1 FROM domains" >/dev/null 2>&1; then
+    if psql "host=${AUTHORITATIVE_DB_HOST:-authoritative-db} dbname=${AUTHORITATIVE_DB_NAME:-pdns} user=${AUTHORITATIVE_DB_USER:-pdns} password=${AUTHORITATIVE_DB_PASS:-pdns} port=${AUTHORITATIVE_DB_PORT:-5432}" -c "SELECT 1 FROM domains;" >/dev/null 2>&1; then
       echo "Already provisioned postgres db"
     else
       echo "Provisioning postgres db"
       psql "host=${AUTHORITATIVE_DB_HOST:-authoritative-db} dbname=${AUTHORITATIVE_DB_NAME:-pdns} user=${AUTHORITATIVE_DB_USER:-pdns} password=${AUTHORITATIVE_DB_PASS:-pdns} port=${AUTHORITATIVE_DB_PORT:-5432}" < /usr/share/doc/pdns/schema.pgsql.sql
+    fi
+
+    psql "host=${AUTHORITATIVE_DB_HOST:-authoritative-db} dbname=${AUTHORITATIVE_DB_NAME:-pdns} user=${AUTHORITATIVE_DB_USER:-pdns} password=${AUTHORITATIVE_DB_PASS:-pdns} port=${AUTHORITATIVE_DB_PORT:-5432}" -c "TRUNCATE supermasters;" >/dev/null 2>&1
+    if [ -n "${AUTHORITATIVE_SUPERMASTERS}" ]; then
+        echo "${AUTHORITATIVE_SUPERMASTERS//,/$'\n'}" | while read supermaster ; do
+            ip=$(echo "${supermaster}" | cut -d= -f1)
+            nameserver=$(echo "${supermaster}" | cut -d= -f2)
+            psql "host=${AUTHORITATIVE_DB_HOST:-authoritative-db} dbname=${AUTHORITATIVE_DB_NAME:-pdns} user=${AUTHORITATIVE_DB_USER:-pdns} password=${AUTHORITATIVE_DB_PASS:-pdns} port=${AUTHORITATIVE_DB_PORT:-5432}" -c "INSERT INTO supermasters (ip, nameserver, account) VALUES ('${ip}', '${nameserver}', 'admin');"
+        done
     fi
 fi
 

@@ -261,6 +261,8 @@ Then you can do the following:
 | Env-Variable                     | Description                                                                     |
 | -------------------------------- | ------------------------------------------------------------------------------- |
 | AUTHORITATIVE_ALLOW_AXFR_IPS     | Allow zonetransfers only to these subnets (default: 127.0.0.0/8,::1)            |
+| AUTHORITATIVE_ALLOW_NOTIFY_FROM  | Allow AXFR NOTIFY from these IP ranges (default: 0.0.0.0/0,::/0)                |
+| AUTHORITATIVE_ALSO_NOTIFY        | When notifying a domain, also notify these nameservers (default: )              |
 | AUTHORITATIVE_API                | Enable/disable the REST API (default: no)                                       |
 | AUTHORITATIVE_API_KEY            | Static pre-shared authentication key for access to the REST API (default: pdns) |
 | AUTHORITATIVE_API_READONLY       | Disallow data modification through the REST API when set (default: no)          |
@@ -275,8 +277,11 @@ Then you can do the following:
 | AUTHORITATIVE_MASTER             | Act as a master (default: yes)                                                  |
 | AUTHORITATIVE_RESOLVER           | Use this resolver for ALIAS and the internal stub resolver (default: no)        |
 | AUTHORITATIVE_SLAVE              | Act as a slave (default: no)                                                    |
+| AUTHORITATIVE_SUPERSLAVE         | Act as a superslave (default: no)                                               |
+| AUTHORITATIVE_TCP_FAST_OPEN      | Enable TCP Fast Open support on the listening sockets (default: 0)              |
 | AUTHORITATIVE_WEBSERVER          | Start a webserver for monitoring on port 8081 (default: no)                     |
 | AUTHORITATIVE_WEBSERVER_PASSWORD | Password required for accessing the webserver (default: pdns)                   |
+| AUTHORITATIVE_SUPERMASTERS       | A list of supermasters for the slave, comma separated ip=nameserver pairs       |
 
 
 ### Dnsdist
