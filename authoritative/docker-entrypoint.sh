@@ -15,7 +15,7 @@ if [ "$1" = "pdns_server" ] && [ ! -f /etc/pdns/pdns.conf ]; then
 
     sed -i "s|# daemon=no|daemon=no|g" /etc/pdns/pdns.conf
     sed -i "s|# direct-dnskey=no|direct-dnskey=${AUTHORITATIVE_DIRECT_DNSKEY:-no}|g" /etc/pdns/pdns.conf
-    sed -i "s|# disable-axfr=no|disable-axfr=${AUTHORITATIVE_DISABLE_AXFR:-no}|g" /etc/pdns/pdns.conf
+    sed -i "s|# disable-axfr=no|disable-axfr=${AUTHORITATIVE_DISABLE_AXFR:-yes}|g" /etc/pdns/pdns.conf
     sed -i "s|# guardian=no|guardian=no|g" /etc/pdns/pdns.conf
     sed -i "s|# write-pid=yes|write-pid=no|g" /etc/pdns/pdns.conf
     sed -i "s|# disable-syslog=no|disable-syslog=yes|g" /etc/pdns/pdns.conf
@@ -27,7 +27,7 @@ if [ "$1" = "pdns_server" ] && [ ! -f /etc/pdns/pdns.conf ]; then
     sed -i "s|# log-dns-queries=no|log-dns-queries=${AUTHORITATIVE_LOG_DNS_QUERIES:-no}|g" /etc/pdns/pdns.conf
     sed -i "s|# loglevel=4|loglevel=${AUTHORITATIVE_LOGLEVEL:-4}|g" /etc/pdns/pdns.conf
 
-    sed -i "s|# master=no|master=${AUTHORITATIVE_MASTER:-yes}|g" /etc/pdns/pdns.conf
+    sed -i "s|# master=no|master=${AUTHORITATIVE_MASTER:-no}|g" /etc/pdns/pdns.conf
     sed -i "s|# slave=no|slave=${AUTHORITATIVE_SLAVE:-no}|g" /etc/pdns/pdns.conf
     sed -i "s|# version-string=.*|version-string=anonymous|g" /etc/pdns/pdns.conf
 

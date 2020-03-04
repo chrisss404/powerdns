@@ -281,14 +281,14 @@ Then you can do the following:
 | AUTHORITATIVE_DEFAULT_ZSK_ALGORITHM       | Default ZSK algorithm (default: )                                                                                                       |
 | AUTHORITATIVE_DEFAULT_ZSK_SIZE            | Default ZSK size (default: 0)                                                                                                           |
 | AUTHORITATIVE_DIRECT_DNSKEY               | Fetch DNSKEY, CDS and CDNSKEY RRs from backend during DNSKEY or CDS/CDNSKEY synthesis (default: no)                                     |
-| AUTHORITATIVE_DISABLE_AXFR                | Disable zonetransfers but do allow TCP queries (default: no)                                                                            |
+| AUTHORITATIVE_DISABLE_AXFR                | Disable zonetransfers but do allow TCP queries (default: yes)                                                                           |
 | AUTHORITATIVE_DNAME_PROCESSING            | If we should support DNAME records (default: no)                                                                                        |
 | AUTHORITATIVE_DNSUPDATE                   | Enable/Disable DNS update (RFC2136) support (default: no)                                                                               |
 | AUTHORITATIVE_EXPAND_ALIAS                | Expand ALIAS records (default: no)                                                                                                      |
 | AUTHORITATIVE_LOG_DNS_DETAILS             | If PDNS should log DNS non-erroneous details (default: no)                                                                              |
 | AUTHORITATIVE_LOG_DNS_QUERIES             | If PDNS should log all incoming DNS queries (default: no)                                                                               |
 | AUTHORITATIVE_LOGLEVEL                    | Amount of logging. Higher is more. Do not set below 3 (default: 4)                                                                      |
-| AUTHORITATIVE_MASTER                      | Act as a master (default: yes)                                                                                                          |
+| AUTHORITATIVE_MASTER                      | Act as a master (default: no)                                                                                                           |
 | AUTHORITATIVE_MAX_TCP_CONNECTION_DURATION | Maximum time in seconds that a TCP DNS connection is allowed to stay open (default: 0)                                                  |
 | AUTHORITATIVE_MAX_TCP_CONNECTIONS         | Maximum number of TCP connections (default: 20)                                                                                         |
 | AUTHORITATIVE_QUERY_LOGGING               | Hint backends that queries should be logged (default: no)                                                                               |
