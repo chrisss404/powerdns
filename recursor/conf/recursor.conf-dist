@@ -347,7 +347,7 @@
 #################################
 # max-qperq	Maximum outgoing queries per query
 #
-# max-qperq=50
+# max-qperq=60
 
 #################################
 # max-recursion-depth	Maximum number of internal recursion calls per query, 0 for unlimited

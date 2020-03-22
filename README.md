@@ -321,6 +321,7 @@ Then you can do the following:
 | RECURSOR_DNSSEC                | DNSSEC mode: off / process-no-validate (default) / process / log-fail / validate                            |
 | RECURSOR_FORWARD_ZONES         | Zones for which we forward queries, comma separated domain=ip pairs                                         |
 | RECURSOR_FORWARD_ZONES_RECURSE | Zones for which we forward queries with recursion bit, comma separated domain=ip pairs                      |
+| RECURSOR_LOGLEVEL              | Amount of logging. Higher is more. Do not set below 3 (default: 3)                                          |
 | RECURSOR_QUIET                 | Suppress logging of questions and answers (default: no)                                                     |
 | RECURSOR_TCP_FAST_OPEN         | Enable TCP Fast Open support on the listening sockets, using the supplied numerical value as the queue size |
 | RECURSOR_THREADS               | Launch this number of threads                                                                               |

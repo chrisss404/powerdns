@@ -20,6 +20,7 @@ if [ "$1" = "pdns_recursor" ] && [ ! -f /etc/pdns-recursor/recursor.conf ]; then
 
     sed -i "s|# local-address=127.0.0.1|local-address=0.0.0.0|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# local-port=53|local-port=53|g" /etc/pdns-recursor/recursor.conf
+    sed -i "s|# loglevel=6|loglevel=${RECURSOR_LOGLEVEL:-3}|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# lua-config-file=|lua-config-file=/etc/pdns-recursor/config.lua|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# lua-dns-script=|lua-dns-script=/etc/pdns-recursor/dns.lua|g" /etc/pdns-recursor/recursor.conf
 
