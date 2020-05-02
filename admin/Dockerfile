@@ -53,6 +53,7 @@ RUN { \
 
 # Move application
 RUN mkdir -p /var/www/pdns-admin && \
+    sed -i "/^SQLALCHEMY_DATABASE_URI/ d" /build/configs/docker_config.py && \
     cp -r /build/configs/docker_config.py /build/migrations/ /build/powerdnsadmin/ /build/run.py /var/www/pdns-admin
 
 COPY ./update_db_settings.py /var/www/pdns-admin/
