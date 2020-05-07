@@ -12,7 +12,7 @@ if [ "$1" = "gunicorn" ] && [ ! -f /var/www/pdns-admin/powerdnsadmin/docker_conf
     sed -i "s|SQLALCHEMY_DATABASE_URI = 'mysql://'+SQLA_DB_USER+':'+SQLA_DB_PASSWORD+'@'+SQLA_DB_HOST+'/'+SQLA_DB_NAME|SQLALCHEMY_DATABASE_URI = 'postgresql://'+SQLA_DB_USER+':'+SQLA_DB_PASSWORD+'@'+SQLA_DB_HOST+':'+str(SQLA_DB_PORT)+'/'+SQLA_DB_NAME|g" /var/www/pdns-admin/powerdnsadmin/docker_config.py
 
     attempts=0
-    while ! psql "host=${ADMIN_DB_HOST:-admin-db} dbname=${ADMIN_DB_NAME:-pda} user=${ADMIN_DB_USER:-pda} password=${ADMIN_DB_PASS:-pda} port=${ADMIN_DB_PORT:-5432}" >/dev/null 2>&1; do
+    while ! psql "host=${ADMIN_DB_HOST:-admin-db} dbname=${ADMIN_DB_NAME:-pda} user=${ADMIN_DB_USER:-pda} password=${ADMIN_DB_PASS:-pda} port=${ADMIN_DB_PORT:-5432}" -c 'select 1' >/dev/null 2>&1; do
       if test "${attempts}" -ge 15; then
         echo "Unable to connect to postgres db"
         exit 1
