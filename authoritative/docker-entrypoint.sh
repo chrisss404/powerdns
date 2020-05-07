@@ -59,7 +59,7 @@ if [ "$1" = "pdns_server" ] && [ ! -f /etc/pdns/pdns.conf ]; then
     echo "gpgsql-dnssec=yes" >> /etc/pdns/pdns.conf
 
     attempts=0
-    while ! psql "host=${AUTHORITATIVE_DB_HOST:-authoritative-db} dbname=${AUTHORITATIVE_DB_NAME:-pdns} user=${AUTHORITATIVE_DB_USER:-pdns} password=${AUTHORITATIVE_DB_PASS:-pdns} port=${AUTHORITATIVE_DB_PORT:-5432}" >/dev/null 2>&1; do
+    while ! psql "host=${AUTHORITATIVE_DB_HOST:-authoritative-db} dbname=${AUTHORITATIVE_DB_NAME:-pdns} user=${AUTHORITATIVE_DB_USER:-pdns} password=${AUTHORITATIVE_DB_PASS:-pdns} port=${AUTHORITATIVE_DB_PORT:-5432}" -c 'select 1' >/dev/null 2>&1; do
       if test "${attempts}" -ge 15; then
         echo "Unable to connect to postgres db"
         exit 1
