@@ -20,6 +20,7 @@ RUN apk add --no-cache \
         libedit-dev \
         libsodium-dev \
         libtool \
+        lmdb-dev \
         make \
         openssl-dev \
         protobuf-dev \
