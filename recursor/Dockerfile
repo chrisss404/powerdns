@@ -1,6 +1,6 @@
 FROM alpine:3.11 AS builder
 
-ARG RECURSOR_VERSION="latest"
+ARG RECURSOR_VERSION="4.1.18"
 
 ARG COMPILER_FLAGS="-Os -fomit-frame-pointer"
 ARG LINKER_FLAGS="-Wl,--as-needed"
@@ -36,8 +36,7 @@ RUN export BUILDER_VERSION=$([ "${RECURSOR_VERSION}" = "latest" ] && echo `date 
     autoreconf -vif && \
     CFLAGS=${COMPILER_FLAGS} CXXFLAGS=${COMPILER_FLAGS} LDFLAGS=${LINKER_FLAGS} ./configure \
             --sysconfdir=/etc/pdns-recursor \
-            --enable-nod \
-            --with-libsodium \
+            --enable-libsodium \
             --with-lua \
             --with-protobuf \
             --disable-shared \
