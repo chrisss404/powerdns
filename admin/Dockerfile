@@ -1,4 +1,4 @@
-FROM alpine:3.11 AS builder
+FROM alpine:3.12 AS builder
 
 ENV FLASK_APP=/build/powerdnsadmin/__init__.py
 
@@ -16,8 +16,7 @@ ARG BUILD_DEPENDENCIES="build-base \
     yarn"
 
 # Get dependencies
-RUN apk add --no-cache ${BUILD_DEPENDENCIES} && \
-    ln -s /usr/bin/pip3 /usr/bin/pip
+RUN apk add --no-cache ${BUILD_DEPENDENCIES}
 
 # Download sources
 RUN git clone -n https://github.com/ngoduykhanh/PowerDNS-Admin.git /build && \
@@ -63,13 +62,12 @@ RUN pip install pip-autoremove && \
     pip-autoremove cssmin -y && \
     pip-autoremove jsmin -y && \
     pip-autoremove mysqlclient -y && \
-    pip-autoremove pytest -y && \
-    pip uninstall -y pip-autoremove && \
+    pip uninstall -y pip-autoremove pytest && \
     apk del ${BUILD_DEPENDENCIES}
 
 
 # Build image
-FROM alpine:3.11
+FROM alpine:3.12
 
 ENV FLASK_APP=/var/www/pdns-admin/powerdnsadmin/__init__.py
 
