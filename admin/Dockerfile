@@ -10,13 +10,12 @@ ARG BUILD_DEPENDENCIES="build-base \
     libxml2-dev \
     mariadb-connector-c-dev \
     openldap-dev \
-    py3-pip \
     python3-dev \
     xmlsec-dev \
     yarn"
 
 # Get dependencies
-RUN apk add --no-cache ${BUILD_DEPENDENCIES}
+RUN apk add --no-cache ${BUILD_DEPENDENCIES} py3-pip
 
 # Download sources
 RUN git clone -n https://github.com/ngoduykhanh/PowerDNS-Admin.git /build && \
