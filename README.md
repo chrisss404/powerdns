@@ -260,6 +260,10 @@ Then you can do the following:
 
 | Env-Variable                              | Description                                                                                                                             |
 | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| AUTHORITATIVE_ALLOW_AXFR_IPS              | Allow zonetransfers only to these subnets (default: 127.0.0.0/8,::1)                                                                    |
+| AUTHORITATIVE_ALLOW_DNSUPDATE_FROM        | A global setting to allow DNS updates from these IP ranges (default: 127.0.0.0/8,::1)                                                   |
+| AUTHORITATIVE_ALLOW_NOTIFY_FROM           | Allow AXFR NOTIFY from these IP ranges (default: 0.0.0.0/0,::/0)                                                                        |
+| AUTHORITATIVE_ALSO_NOTIFY                 | When notifying a domain, also notify these nameservers (default: )                                                                      |
 | AUTHORITATIVE_API                         | Enable/disable the REST API (default: no)                                                                                               |
 | AUTHORITATIVE_API_KEY                     | Static pre-shared authentication key for access to the REST API (default: pdns)                                                         |
 | AUTHORITATIVE_API_READONLY                | Disallow data modification through the REST API when set (default: no)                                                                  |
@@ -272,14 +276,19 @@ Then you can do the following:
 | AUTHORITATIVE_DEFAULT_KSK_SIZE            | Default KSK size (default: 0)                                                                                                           |
 | AUTHORITATIVE_DEFAULT_PUBLISH_CDNSKEY     | Default value for PUBLISH-CDNSKEY (default: )                                                                                           |
 | AUTHORITATIVE_DEFAULT_PUBLISH_CDS         | Default value for PUBLISH-CDS (default: )                                                                                               |
+| AUTHORITATIVE_DEFAULT_SOA_MAIL            | Mail address to insert in the SOA record if none set in the backend (default: )                                                         |
+| AUTHORITATIVE_DEFAULT_SOA_NAME            | Name to insert in the SOA record if none set in the backend (default: a.misconfigured.powerdns.server)                                  |
 | AUTHORITATIVE_DEFAULT_ZSK_ALGORITHM       | Default ZSK algorithm (default: )                                                                                                       |
 | AUTHORITATIVE_DEFAULT_ZSK_SIZE            | Default ZSK size (default: 0)                                                                                                           |
 | AUTHORITATIVE_DIRECT_DNSKEY               | Fetch DNSKEY, CDS and CDNSKEY RRs from backend during DNSKEY or CDS/CDNSKEY synthesis (default: no)                                     |
+| AUTHORITATIVE_DISABLE_AXFR                | Disable zonetransfers but do allow TCP queries (default: yes)                                                                           |
 | AUTHORITATIVE_DNAME_PROCESSING            | If we should support DNAME records (default: no)                                                                                        |
+| AUTHORITATIVE_DNSUPDATE                   | Enable/Disable DNS update (RFC2136) support (default: no)                                                                               |
 | AUTHORITATIVE_EXPAND_ALIAS                | Expand ALIAS records (default: no)                                                                                                      |
 | AUTHORITATIVE_LOG_DNS_DETAILS             | If PDNS should log DNS non-erroneous details (default: no)                                                                              |
 | AUTHORITATIVE_LOG_DNS_QUERIES             | If PDNS should log all incoming DNS queries (default: no)                                                                               |
 | AUTHORITATIVE_LOGLEVEL                    | Amount of logging. Higher is more. Do not set below 3 (default: 4)                                                                      |
+| AUTHORITATIVE_MASTER                      | Act as a master (default: no)                                                                                                           |
 | AUTHORITATIVE_MAX_TCP_CONNECTION_DURATION | Maximum time in seconds that a TCP DNS connection is allowed to stay open (default: 0)                                                  |
 | AUTHORITATIVE_MAX_TCP_CONNECTIONS         | Maximum number of TCP connections (default: 20)                                                                                         |
 | AUTHORITATIVE_QUERY_LOGGING               | Hint backends that queries should be logged (default: no)                                                                               |
@@ -287,7 +296,10 @@ Then you can do the following:
 | AUTHORITATIVE_RESOLVER                    | Use this resolver for ALIAS and the internal stub resolver (default: no)                                                                |
 | AUTHORITATIVE_RETRIEVAL_THREADS           | Number of AXFR-retrieval threads for slave operation (default: 2)                                                                       |
 | AUTHORITATIVE_REUSEPORT                   | Enable higher performance on compliant kernels by using SO_REUSEPORT allowing each receiver thread to open its own socket (default: no) |
+| AUTHORITATIVE_SLAVE                       | Act as a slave (default: no)                                                                                                            |
 | AUTHORITATIVE_SIGNING_THREADS             | Default number of signer threads to start (default: 3)                                                                                  |
+| AUTHORITATIVE_SUPERMASTERS                | A list of supermasters for the slave, comma separated ip=nameserver pairs                                                               |
+| AUTHORITATIVE_SUPERSLAVE                  | Act as a superslave (default: no)                                                                                                       |
 | AUTHORITATIVE_TCP_FAST_OPEN               | Enable TCP Fast Open support on the listening sockets (default: 0)                                                                      |
 | AUTHORITATIVE_WEBSERVER                   | Start a webserver for monitoring on port 8081 (default: no)                                                                             |
 | AUTHORITATIVE_WEBSERVER_PASSWORD          | Password required for accessing the webserver (default: pdns)                                                                           |
