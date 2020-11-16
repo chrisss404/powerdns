@@ -1,0 +1,37 @@
+version: '2.3'
+
+services:
+
+  slave:
+    image: chrisss404/powerdns:latest-authoritative
+    depends_on:
+      - slave-db
+    environment:
+      - AUTHORITATIVE_DB_HOST=slave-db
+    networks:
+      - slave-db
+    ports:
+      - "2053:53/tcp"
+      - "2053:53/udp"
+
+  slave-db:
+    image: postgres:12.2-alpine
+    environment:
+      - POSTGRES_DB=pdns
+      - POSTGRES_INITDB_ARGS=--data-checksums
+      - POSTGRES_PASSWORD=pdns
+      - POSTGRES_REPLICATION_PASSWORD=secret
+      - POSTGRES_USER=pdns
+    volumes:
+      - "./slave/postgresql.conf:/etc/postgresql/postgresql.conf:ro"
+      - "./slave/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro"
+      - "./ca-certs/root.crt:/var/lib/postgresql/root.crt:ro"
+      - "./slave/certs/replicator.crt:/var/lib/postgresql/replicator.crt:ro"
+      - "./slave/certs/replicator.key:/var/lib/postgresql/replicator.key:ro"
+    extra_hosts:
+      - "clu01.auth-db.internal:10.0.0.135"
+    networks:
+      - slave-db
+
+networks:
+  slave-db:

@@ -1,0 +1,42 @@
+version: '2.3'
+
+services:
+
+  master:
+    image: chrisss404/powerdns:latest-authoritative
+    depends_on:
+      - master-db
+    environment:
+      - AUTHORITATIVE_API=yes
+      - AUTHORITATIVE_API_KEY=api-secret-authoritative
+      - AUTHORITATIVE_DB_HOST=master-db
+    networks:
+      - master-db
+    ports:
+      - "1053:53/tcp"
+      - "1053:53/udp"
+      - "8081:8081"
+
+  master-db:
+    image: postgres:12.2-alpine
+    environment:
+      - POSTGRES_DB=pdns
+      - POSTGRES_INITDB_ARGS=--data-checksums
+      - POSTGRES_PASSWORD=pdns
+      - POSTGRES_REPLICATION_PASSWORD=secret
+      - POSTGRES_USER=pdns
+    volumes:
+      - "./master/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro"
+      - "./master/pg_hba.conf:/etc/postgresql/pg_hba.conf:ro"
+      - "./master/postgresql.conf:/etc/postgresql/postgresql.conf:ro"
+      - "./ca-certs/root.crt:/var/lib/postgresql/root.crt:ro"
+      - "./master/certs/server.crt:/var/lib/postgresql/server.crt:ro"
+      - "./master/certs/server.key:/var/lib/postgresql/server.key:ro"
+    networks:
+      - master-db
+    ports:
+      - '0.0.0.0:5432:5432/tcp'
+    command: "-c 'config_file=/etc/postgresql/postgresql.conf'"
+
+networks:
+  master-db:
