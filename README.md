@@ -8,7 +8,7 @@ Source code of PowerDNS here: https://github.com/PowerDNS/pdns
 
 Simple example of an ad blocking private recursor that is listening for DNSCrypt and DNS-over-TLS (DoT) queries. Easy setup for any desktop OS using [dnscrypt-proxy](https://github.com/jedisct1/dnscrypt-proxy/wiki/Installation#os-specific-instructions) and Android 9 has native support for [DoT](https://developers.google.com/speed/public-dns/docs/using#android).
 
-Create [private-recursor.yml](private-recursor.yml) like this:
+Create private-recursor.yml like this:
 
     version: '2.1'
     
@@ -109,7 +109,7 @@ Then you can do the following:
 
 Simple example of full powerdns stack including private authoritative nameserver and admin interface for editing DNS records.
 
-Create [private-authoritative.yml](private-authoritative.yml) like this:
+Create private-authoritative.yml like this:
 
     version: '2.1'
     
@@ -261,9 +261,7 @@ Then you can do the following:
 | Env-Variable                              | Description                                                                                                                             |
 | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | AUTHORITATIVE_ALLOW_AXFR_IPS              | Allow zonetransfers only to these subnets (default: 127.0.0.0/8,::1)                                                                    |
-| AUTHORITATIVE_ALLOW_DNSUPDATE_FROM        | A global setting to allow DNS updates from these IP ranges (default: 127.0.0.0/8,::1)                                                   |
 | AUTHORITATIVE_ALLOW_NOTIFY_FROM           | Allow AXFR NOTIFY from these IP ranges (default: 0.0.0.0/0,::/0)                                                                        |
-| AUTHORITATIVE_ALSO_NOTIFY                 | When notifying a domain, also notify these nameservers (default: )                                                                      |
 | AUTHORITATIVE_API                         | Enable/disable the REST API (default: no)                                                                                               |
 | AUTHORITATIVE_API_KEY                     | Static pre-shared authentication key for access to the REST API (default: pdns)                                                         |
 | AUTHORITATIVE_API_READONLY                | Disallow data modification through the REST API when set (default: no)                                                                  |
@@ -276,14 +274,11 @@ Then you can do the following:
 | AUTHORITATIVE_DEFAULT_KSK_SIZE            | Default KSK size (default: 0)                                                                                                           |
 | AUTHORITATIVE_DEFAULT_PUBLISH_CDNSKEY     | Default value for PUBLISH-CDNSKEY (default: )                                                                                           |
 | AUTHORITATIVE_DEFAULT_PUBLISH_CDS         | Default value for PUBLISH-CDS (default: )                                                                                               |
-| AUTHORITATIVE_DEFAULT_SOA_MAIL            | Mail address to insert in the SOA record if none set in the backend (default: )                                                         |
-| AUTHORITATIVE_DEFAULT_SOA_NAME            | Name to insert in the SOA record if none set in the backend (default: a.misconfigured.powerdns.server)                                  |
 | AUTHORITATIVE_DEFAULT_ZSK_ALGORITHM       | Default ZSK algorithm (default: )                                                                                                       |
 | AUTHORITATIVE_DEFAULT_ZSK_SIZE            | Default ZSK size (default: 0)                                                                                                           |
 | AUTHORITATIVE_DIRECT_DNSKEY               | Fetch DNSKEY, CDS and CDNSKEY RRs from backend during DNSKEY or CDS/CDNSKEY synthesis (default: no)                                     |
 | AUTHORITATIVE_DISABLE_AXFR                | Disable zonetransfers but do allow TCP queries (default: yes)                                                                           |
 | AUTHORITATIVE_DNAME_PROCESSING            | If we should support DNAME records (default: no)                                                                                        |
-| AUTHORITATIVE_DNSUPDATE                   | Enable/Disable DNS update (RFC2136) support (default: no)                                                                               |
 | AUTHORITATIVE_EXPAND_ALIAS                | Expand ALIAS records (default: no)                                                                                                      |
 | AUTHORITATIVE_LOG_DNS_DETAILS             | If PDNS should log DNS non-erroneous details (default: no)                                                                              |
 | AUTHORITATIVE_LOG_DNS_QUERIES             | If PDNS should log all incoming DNS queries (default: no)                                                                               |
@@ -298,8 +293,6 @@ Then you can do the following:
 | AUTHORITATIVE_REUSEPORT                   | Enable higher performance on compliant kernels by using SO_REUSEPORT allowing each receiver thread to open its own socket (default: no) |
 | AUTHORITATIVE_SLAVE                       | Act as a slave (default: no)                                                                                                            |
 | AUTHORITATIVE_SIGNING_THREADS             | Default number of signer threads to start (default: 3)                                                                                  |
-| AUTHORITATIVE_SUPERMASTERS                | A list of supermasters for the slave, comma separated ip=nameserver pairs                                                               |
-| AUTHORITATIVE_SUPERSLAVE                  | Act as a superslave (default: no)                                                                                                       |
 | AUTHORITATIVE_TCP_FAST_OPEN               | Enable TCP Fast Open support on the listening sockets (default: 0)                                                                      |
 | AUTHORITATIVE_WEBSERVER                   | Start a webserver for monitoring on port 8081 (default: no)                                                                             |
 | AUTHORITATIVE_WEBSERVER_PASSWORD          | Password required for accessing the webserver (default: pdns)                                                                           |
