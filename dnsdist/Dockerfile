@@ -1,7 +1,6 @@
-FROM alpine:3.12 AS builder
+FROM alpine:3.13 AS builder
 
 ARG DNSDIST_VERSION="latest"
-ARG H2O_VERSION="2.2.5"
 
 ARG COMPILER_FLAGS="-Os -fomit-frame-pointer"
 ARG LINKER_FLAGS="-Wl,--as-needed"
@@ -16,6 +15,7 @@ RUN apk add --no-cache \
         file \
         g++ \
         git \
+        h2o-dev \
         lua-dev \
         libedit-dev \
         libsodium-dev \
@@ -27,15 +27,6 @@ RUN apk add --no-cache \
         py3-virtualenv \
         ragel \
         re2-dev
-
-# Compile and install libh2o
-RUN wget https://github.com/h2o/h2o/archive/v${H2O_VERSION}.tar.gz -O - | tar -xz && \
-    cd h2o-${H2O_VERSION} && \
-    cmake -DCMAKE_INSTALL_PREFIX=/usr -DWITH_BUNDLED_SSL=off . && \
-    make && \
-    make install && \
-    cp /usr/lib64/libh2o-evloop.a /usr/lib/libh2o-evloop.a && \
-    cp /usr/lib64/pkgconfig/libh2o-evloop.pc /usr/lib/pkgconfig/libh2o-evloop.pc
 
 # Download sources
 RUN git clone -n https://github.com/PowerDNS/pdns.git /build && \
@@ -55,7 +46,6 @@ RUN export BUILDER_VERSION=$([ "${DNSDIST_VERSION}" = "latest" ] && echo `date +
             --enable-dns-over-tls \
             --with-libsodium \
             --with-lua \
-            --with-protobuf \
             --with-re2 \
             --disable-shared \
             --enable-static && \
@@ -64,9 +54,9 @@ RUN export BUILDER_VERSION=$([ "${DNSDIST_VERSION}" = "latest" ] && echo `date +
 
 
 # Build image
-FROM alpine:3.12
+FROM alpine:3.13
 
-RUN apk add --no-cache libedit libsodium lmdb lua protobuf re2 && \
+RUN apk add --no-cache h2o libedit libsodium lmdb lua protobuf re2 && \
     addgroup -S dnsdist && \
     adduser -S -D -G dnsdist dnsdist && \
     mkdir -p /etc/dnsdist /var/lib/dnsdist && \
