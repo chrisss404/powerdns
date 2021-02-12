@@ -1,10 +1,11 @@
-FROM alpine:3.12 AS builder
+FROM alpine:3.13 AS builder
 
 ENV FLASK_APP=/build/powerdnsadmin/__init__.py
 
 ARG ADMIN_VERSION="2917c47"
 
 ARG BUILD_DEPENDENCIES="build-base \
+    cargo \
     git \
     libffi-dev \
     libxml2-dev \
@@ -66,7 +67,7 @@ RUN pip install pip-autoremove && \
 
 
 # Build image
-FROM alpine:3.12
+FROM alpine:3.13
 
 ENV FLASK_APP=/var/www/pdns-admin/powerdnsadmin/__init__.py
 

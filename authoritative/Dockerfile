@@ -1,4 +1,4 @@
-FROM alpine:3.12 AS builder
+FROM alpine:3.13 AS builder
 
 ARG PDNS_VERSION="latest"
 
@@ -43,7 +43,6 @@ RUN export BUILDER_VERSION=$([ "${PDNS_VERSION}" = "latest" ] && echo `date +%Y-
             --with-dynmodules= \
             --with-libsodium \
             --with-modules="gpgsql" \
-            --with-protobuf \
             --disable-shared \
             --enable-static && \
     make dist -j $(nproc) && \
@@ -52,7 +51,7 @@ RUN export BUILDER_VERSION=$([ "${PDNS_VERSION}" = "latest" ] && echo `date +%Y-
 
 
 # Build image
-FROM alpine:3.12
+FROM alpine:3.13
 
 RUN apk add --no-cache boost-program_options libcurl libsodium lua postgresql-client postgresql-libs protobuf && \
     addgroup -S pdns && \
