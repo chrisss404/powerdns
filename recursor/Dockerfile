@@ -1,4 +1,4 @@
-FROM alpine:3.12 AS builder
+FROM alpine:3.13 AS builder
 
 ARG RECURSOR_VERSION="latest"
 
@@ -39,7 +39,6 @@ RUN export BUILDER_VERSION=$([ "${RECURSOR_VERSION}" = "latest" ] && echo `date 
             --enable-nod \
             --with-libsodium \
             --with-lua \
-            --with-protobuf \
             --disable-shared \
             --enable-static && \
     make dist -j $(nproc) && \
@@ -47,7 +46,7 @@ RUN export BUILDER_VERSION=$([ "${RECURSOR_VERSION}" = "latest" ] && echo `date 
 
 
 # Build image
-FROM alpine:3.12
+FROM alpine:3.13
 
 RUN apk add --no-cache boost-context boost-filesystem boost-system libsodium lua protobuf && \
     addgroup -S recursor && \
