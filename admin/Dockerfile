@@ -1,4 +1,4 @@
-FROM alpine:3.13 AS builder
+FROM alpine:3.14 AS builder
 
 ENV FLASK_APP=/build/powerdnsadmin/__init__.py
 
@@ -67,7 +67,7 @@ RUN pip install pip-autoremove && \
 
 
 # Build image
-FROM alpine:3.13
+FROM alpine:3.14
 
 ENV FLASK_APP=/var/www/pdns-admin/powerdnsadmin/__init__.py
 
@@ -76,7 +76,7 @@ RUN apk add --no-cache postgresql-client py3-gunicorn py3-psycopg2 xmlsec && \
     adduser -S -D -G pda pda
 
 COPY --from=builder /usr/bin/flask /usr/bin/
-COPY --from=builder /usr/lib/python3.8/site-packages /usr/lib/python3.8/site-packages/
+COPY --from=builder /usr/lib/python3.9/site-packages /usr/lib/python3.9/site-packages/
 COPY --from=builder --chown=pda:pda /var/www/pdns-admin /var/www/pdns-admin/
 COPY ./docker-entrypoint.sh /usr/bin/
 

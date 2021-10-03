@@ -1,4 +1,4 @@
-FROM alpine:3.13 AS builder
+FROM alpine:3.14 AS builder
 
 ARG RECURSOR_VERSION="latest"
 
@@ -19,6 +19,7 @@ RUN apk add --no-cache \
         lua-dev \
         make \
         openssl-dev \
+        patch \
         protobuf-dev \
         py3-virtualenv \
         ragel
@@ -29,6 +30,11 @@ RUN git clone -n https://github.com/PowerDNS/pdns.git /build && \
     git checkout $([ "${RECURSOR_VERSION}" = "latest" ] && echo "master" || echo "rec-${RECURSOR_VERSION}")
 
 WORKDIR /build/pdns/recursordist
+
+# Apply patches
+COPY ./rec-taskqueue.patch ./taskqueue.patch ./
+RUN patch -p0 < rec-taskqueue.patch && \
+    patch -p0 < taskqueue.patch
 
 # Compile
 RUN export BUILDER_VERSION=$([ "${RECURSOR_VERSION}" = "latest" ] && echo `date +%Y-%m-%d` || echo "${RECURSOR_VERSION}") && \
@@ -46,7 +52,7 @@ RUN export BUILDER_VERSION=$([ "${RECURSOR_VERSION}" = "latest" ] && echo `date 
 
 
 # Build image
-FROM alpine:3.13
+FROM alpine:3.14
 
 RUN apk add --no-cache boost-context boost-filesystem boost-system libsodium lua protobuf && \
     addgroup -S recursor && \

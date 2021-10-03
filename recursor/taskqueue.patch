@@ -1,0 +1,10 @@
+--- taskqueue_orig.cc	2021-10-03 09:35:45.059000000 +0200
++++ taskqueue.cc	2021-10-03 10:19:40.869453573 +0200
+@@ -20,6 +20,7 @@
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  */
+ 
++#include <sys/time.h>
+ #include "taskqueue.hh"
+ 
+ #include "logger.hh"
