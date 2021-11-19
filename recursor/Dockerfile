@@ -31,11 +31,6 @@ RUN git clone -n https://github.com/PowerDNS/pdns.git /build && \
 
 WORKDIR /build/pdns/recursordist
 
-# Apply patches
-COPY ./rec-taskqueue.patch ./taskqueue.patch ./
-RUN patch -p0 < rec-taskqueue.patch && \
-    patch -p0 < taskqueue.patch
-
 # Compile
 RUN export BUILDER_VERSION=$([ "${RECURSOR_VERSION}" = "latest" ] && echo `date +%Y-%m-%d` || echo "${RECURSOR_VERSION}") && \
     sed -i -e "s|dist_man_MANS=\$(MANPAGES)|MANPAGES=\ndist_man_MANS=\$(MANPAGES)|g" Makefile.am && \
