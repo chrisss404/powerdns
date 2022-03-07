@@ -22,6 +22,7 @@ RUN apk add --no-cache \
         libtool \
         lmdb-dev \
         make \
+        nghttp2-dev \
         openssl-dev \
         protobuf-dev \
         py3-virtualenv \
@@ -46,6 +47,7 @@ RUN export BUILDER_VERSION=$([ "${DNSDIST_VERSION}" = "latest" ] && echo `date +
             --enable-dns-over-tls \
             --with-libsodium \
             --with-lua \
+            --with-nghttp2 \
             --with-re2 \
             --disable-shared \
             --enable-static && \
@@ -56,7 +58,7 @@ RUN export BUILDER_VERSION=$([ "${DNSDIST_VERSION}" = "latest" ] && echo `date +
 # Build image
 FROM alpine:3.14
 
-RUN apk add --no-cache h2o libedit libsodium lmdb lua protobuf re2 && \
+RUN apk add --no-cache h2o libedit libsodium lmdb lua nghttp2 protobuf re2 && \
     addgroup -S dnsdist && \
     adduser -S -D -G dnsdist dnsdist && \
     mkdir -p /etc/dnsdist /var/lib/dnsdist && \
