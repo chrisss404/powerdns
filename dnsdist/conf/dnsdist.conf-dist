@@ -29,7 +29,7 @@ if dnscrypt ~= nil and string.lower(dnscrypt) == "yes" then
     if not file_exists("/var/lib/dnsdist/resolver.cert") or not file_exists("/var/lib/dnsdist/resolver.key") then
         infolog("Generate new DNSCrypt keys.")
         generateDNSCryptProviderKeys("/var/lib/dnsdist/providerPublic.key", "/var/lib/dnsdist/providerPrivate.key")
-        generateDNSCryptCertificate("/var/lib/dnsdist/providerPrivate.key", "/var/lib/dnsdist/resolver.cert", "/var/lib/dnsdist/resolver.key", os.date('%Y%m%d', os.time()), os.time(os.date("!*t")), os.time({year=2025, month=2, day=1, hour=00, minute=00}))
+        generateDNSCryptCertificate("/var/lib/dnsdist/providerPrivate.key", "/var/lib/dnsdist/resolver.cert", "/var/lib/dnsdist/resolver.key", os.date('%Y%m%d', os.time()), os.time(), os.time() + (365 * 86400))
     end
 
     local dnscrypt_provider_name = os.getenv("DNSDIST_DNSCRYPT_PROVIDER_NAME")

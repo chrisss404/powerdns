@@ -26,7 +26,9 @@ RUN git clone -n https://github.com/ngoduykhanh/PowerDNS-Admin.git /build && \
 WORKDIR /build
 
 # Get application dependencies
-RUN pip install -r requirements.txt
+RUN sed -i 's/Flask==1.1.2/Flask==1.1.4/g' requirements.txt && \
+    echo "markupsafe==2.0.1" >> requirements.txt && \
+    pip install -r requirements.txt
 
 # Prepare assets
 RUN yarn install --pure-lockfile --production && \
