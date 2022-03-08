@@ -1,4 +1,4 @@
-FROM alpine:3.14 AS builder
+FROM alpine:3.15 AS builder
 
 ARG PDNS_VERSION="latest"
 
@@ -51,7 +51,7 @@ RUN export BUILDER_VERSION=$([ "${PDNS_VERSION}" = "latest" ] && echo `date +%Y-
 
 
 # Build image
-FROM alpine:3.14
+FROM alpine:3.15
 
 RUN apk add --no-cache boost-program_options libcurl libsodium lua postgresql-client postgresql-libs protobuf && \
     addgroup -S pdns && \
