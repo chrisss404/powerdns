@@ -1,4 +1,4 @@
-FROM alpine:3.14 AS builder
+FROM alpine:3.15 AS builder
 
 ENV FLASK_APP=/build/powerdnsadmin/__init__.py
 
@@ -16,7 +16,8 @@ ARG BUILD_DEPENDENCIES="build-base \
     yarn"
 
 # Get dependencies
-RUN apk add --no-cache ${BUILD_DEPENDENCIES} py3-pip
+RUN apk add --no-cache ${BUILD_DEPENDENCIES} py3-pip && \
+    echo 'INPUT ( libldap.so )' > /usr/lib/libldap_r.so
 
 # Download sources
 RUN git clone -n https://github.com/ngoduykhanh/PowerDNS-Admin.git /build && \
@@ -26,7 +27,9 @@ RUN git clone -n https://github.com/ngoduykhanh/PowerDNS-Admin.git /build && \
 WORKDIR /build
 
 # Get application dependencies
-RUN pip install -r requirements.txt
+RUN sed -i 's/Flask==1.1.2/Flask==1.1.4/g' requirements.txt && \
+    echo "markupsafe==2.0.1" >> requirements.txt && \
+    pip install -r requirements.txt
 
 # Prepare assets
 RUN yarn install --pure-lockfile --production && \
@@ -67,11 +70,11 @@ RUN pip install pip-autoremove && \
 
 
 # Build image
-FROM alpine:3.14
+FROM alpine:3.15
 
 ENV FLASK_APP=/var/www/pdns-admin/powerdnsadmin/__init__.py
 
-RUN apk add --no-cache postgresql-client py3-gunicorn py3-psycopg2 xmlsec && \
+RUN apk add --no-cache libldap postgresql-client py3-gunicorn py3-psycopg2 xmlsec && \
     addgroup -S pda && \
     adduser -S -D -G pda pda
 

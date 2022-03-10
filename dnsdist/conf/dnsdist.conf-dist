@@ -76,7 +76,8 @@ end
 -- Start webserver
 local start_webserver = os.getenv("DNSDIST_WEBSERVER")
 if start_webserver ~= nil and string.lower(start_webserver) == "yes" then
-    webserver("0.0.0.0:8083", "pdns", "pdns")
+    webserver("0.0.0.0:8083")
+    setWebserverConfig({password="pdns", apiKey="pdns", acl="0.0.0.0/0"})
 end
 
 -- Log queries to stdout

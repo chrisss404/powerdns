@@ -1,4 +1,4 @@
-FROM alpine:3.14 AS builder
+FROM alpine:3.15 AS builder
 
 ARG DNSDIST_VERSION="1.7.0"
 
@@ -56,7 +56,7 @@ RUN export BUILDER_VERSION=$([ "${DNSDIST_VERSION}" = "latest" ] && echo `date +
 
 
 # Build image
-FROM alpine:3.14
+FROM alpine:3.15
 
 RUN apk add --no-cache h2o libedit libsodium lmdb lua nghttp2 protobuf re2 && \
     addgroup -S dnsdist && \

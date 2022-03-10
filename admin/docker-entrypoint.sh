@@ -9,7 +9,7 @@ if [ "$1" = "gunicorn" ] && [ ! -f /var/www/pdns-admin/powerdnsadmin/docker_conf
     sed -i "s|SQLA_DB_HOST = '127.0.0.1'|SQLA_DB_HOST = '127.0.0.1'\nSQLA_DB_PORT = ${ADMIN_DB_PORT:-5432}|g" /var/www/pdns-admin/powerdnsadmin/docker_config.py
     sed -i "s|SQLA_DB_HOST = '127.0.0.1'|SQLA_DB_HOST = '${ADMIN_DB_HOST:-admin-db}'|g" /var/www/pdns-admin/powerdnsadmin/docker_config.py
     sed -i "s|SQLA_DB_NAME = 'pda'|SQLA_DB_NAME = '${ADMIN_DB_NAME:-pda}'|g" /var/www/pdns-admin/powerdnsadmin/docker_config.py
-    sed -i "s|SQLALCHEMY_DATABASE_URI = 'mysql://'+SQLA_DB_USER+':'+SQLA_DB_PASSWORD+'@'+SQLA_DB_HOST+'/'+SQLA_DB_NAME|SQLALCHEMY_DATABASE_URI = 'postgresql://'+SQLA_DB_USER+':'+SQLA_DB_PASSWORD+'@'+SQLA_DB_HOST+':'+str(SQLA_DB_PORT)+'/'+SQLA_DB_NAME|g" /var/www/pdns-admin/powerdnsadmin/docker_config.py
+    sed -i "s|SQLALCHEMY_DATABASE_URI = 'mysql://{}:{}@{}/{}'.format(|SQLALCHEMY_DATABASE_URI = 'postgresql://{}:{}@{}/{}'.format(|g" /var/www/pdns-admin/powerdnsadmin/docker_config.py
 
     attempts=0
     while ! psql "host=${ADMIN_DB_HOST:-admin-db} dbname=${ADMIN_DB_NAME:-pda} user=${ADMIN_DB_USER:-pda} password=${ADMIN_DB_PASS:-pda} port=${ADMIN_DB_PORT:-5432}" -c 'select 1' >/dev/null 2>&1; do
