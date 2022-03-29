@@ -27,8 +27,10 @@ RUN git clone -n https://github.com/ngoduykhanh/PowerDNS-Admin.git /build && \
 WORKDIR /build
 
 # Get application dependencies
-RUN sed -i 's/Flask==1.1.2/Flask==1.1.4/g' requirements.txt && \
-    echo "markupsafe==2.0.1" >> requirements.txt && \
+RUN sed -i 's/Flask==1.1.2/Flask==1.1.4\nmarkupsafe==2.0.1/g' requirements.txt && \
+    sed -i 's/Jinja2==3.0.3/Jinja2==2.11.3/g' requirements.txt && \
+    sed -i 's/itsdangerous==2.0.1/itsdangerous==1.1.0/g' requirements.txt && \
+    sed -i 's/werkzeug==2.0.3/werkzeug==1.0.1/g' requirements.txt && \
     pip install -r requirements.txt
 
 # Prepare assets
