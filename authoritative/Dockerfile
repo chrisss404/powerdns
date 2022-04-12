@@ -1,6 +1,6 @@
 FROM alpine:3.15 AS builder
 
-ARG PDNS_VERSION="latest"
+ARG PDNS_VERSION="4.6.2"
 
 ARG COMPILER_FLAGS="-Os -fomit-frame-pointer"
 ARG LINKER_FLAGS="-Wl,--as-needed"
