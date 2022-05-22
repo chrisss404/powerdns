@@ -259,7 +259,7 @@ Then you can do the following:
 ### Authoritative
 
 | Env-Variable                              | Description                                                                                                                             |
-| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+|-------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
 | AUTHORITATIVE_ALLOW_AXFR_IPS              | Allow zonetransfers only to these subnets (default: 127.0.0.0/8,::1)                                                                    |
 | AUTHORITATIVE_ALLOW_NOTIFY_FROM           | Allow AXFR NOTIFY from these IP ranges (default: 0.0.0.0/0,::/0)                                                                        |
 | AUTHORITATIVE_API                         | Enable/disable the REST API (default: no)                                                                                               |
@@ -291,6 +291,7 @@ Then you can do the following:
 | AUTHORITATIVE_RESOLVER                    | Use this resolver for ALIAS and the internal stub resolver (default: no)                                                                |
 | AUTHORITATIVE_RETRIEVAL_THREADS           | Number of AXFR-retrieval threads for slave operation (default: 2)                                                                       |
 | AUTHORITATIVE_REUSEPORT                   | Enable higher performance on compliant kernels by using SO_REUSEPORT allowing each receiver thread to open its own socket (default: no) |
+| AUTHORITATIVE_SECURITY_POLL_SUFFIX        | Domain name from which to query security update notifications (default: secpoll.powerdns.com.)                                          |
 | AUTHORITATIVE_SLAVE                       | Act as a slave (default: no)                                                                                                            |
 | AUTHORITATIVE_SIGNING_THREADS             | Default number of signer threads to start (default: 3)                                                                                  |
 | AUTHORITATIVE_TCP_FAST_OPEN               | Enable TCP Fast Open support on the listening sockets (default: 0)                                                                      |
@@ -319,7 +320,7 @@ Then you can do the following:
 ### Recursor
 
 | Env-Variable                   | Description                                                                                                 |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+|--------------------------------|-------------------------------------------------------------------------------------------------------------|
 | RECURSOR_ALLOW_FROM            | If set, only allow these comma separated netmasks to recurse                                                |
 | RECURSOR_API_KEY               | Static pre-shared authentication key for access to the REST API (default: pdns)                             |
 | RECURSOR_API_READONLY          | Disallow data modification through the REST API when set (default: yes)                                     |
@@ -328,6 +329,7 @@ Then you can do the following:
 | RECURSOR_FORWARD_ZONES_RECURSE | Zones for which we forward queries with recursion bit, comma separated domain=ip pairs                      |
 | RECURSOR_LOGLEVEL              | Amount of logging. Higher is more. Do not set below 3 (default: 3)                                          |
 | RECURSOR_QUIET                 | Suppress logging of questions and answers (default: no)                                                     |
+| RECURSOR_SECURITY_POLL_SUFFIX  | Domain name from which to query security update notifications (default: secpoll.powerdns.com.)              |
 | RECURSOR_TCP_FAST_OPEN         | Enable TCP Fast Open support on the listening sockets, using the supplied numerical value as the queue size |
 | RECURSOR_THREADS               | Launch this number of threads                                                                               |
 | RECURSOR_TRUST_ANCHORS         | Trust anchors for private zones when using DNSSEC validation, comma separated domain=ds-key pairs           |

@@ -38,7 +38,7 @@ if [ "$1" = "pdns_recursor" ] && [ ! -f /etc/pdns-recursor/recursor.conf ]; then
     sed -i "s|# webserver-password=|webserver-password=${RECURSOR_WEBSERVER_PASSWORD:-pdns}|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# webserver-port=8082|webserver-port=8082|g" /etc/pdns-recursor/recursor.conf
 
-    sed -i "s|# security-poll-suffix=.*|security-poll-suffix=${RECURSOR_SECURITY_POOL_SUFFIX:-secpoll.powerdns.com.}|g" /etc/pdns-recursor/recursor.conf
+    sed -i "s|# security-poll-suffix=.*|security-poll-suffix=${RECURSOR_SECURITY_POLL_SUFFIX:-secpoll.powerdns.com.}|g" /etc/pdns-recursor/recursor.conf
 
     echo "pdnslog('Loading Lua Configuration')" > /etc/pdns-recursor/config.lua
     if [ -n "${RECURSOR_TRUST_ANCHORS}" ]; then
