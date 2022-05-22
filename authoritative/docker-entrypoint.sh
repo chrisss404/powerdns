@@ -56,6 +56,8 @@ if [ "$1" = "pdns_server" ] && [ ! -f /etc/pdns/pdns.conf ]; then
     sed -i "s|# webserver-password=|webserver-password=${AUTHORITATIVE_WEBSERVER_PASSWORD:-pdns}|g" /etc/pdns/pdns.conf
     sed -i "s|# webserver-port=8081|webserver-port=8081|g" /etc/pdns/pdns.conf
 
+    sed -i "s|# security-poll-suffix=.*|security-poll-suffix=${RECURSOR_SECURITY_POOL_SUFFIX:-secpoll.powerdns.com.}|g" /etc/pdns/pdns.conf
+
     sed -i "s|# launch=|launch=gpgsql|g" /etc/pdns/pdns.conf
     echo "gpgsql-user=${AUTHORITATIVE_DB_USER:-pdns}" >> /etc/pdns/pdns.conf
     echo "gpgsql-host=${AUTHORITATIVE_DB_HOST:-authoritative-db}" >> /etc/pdns/pdns.conf
