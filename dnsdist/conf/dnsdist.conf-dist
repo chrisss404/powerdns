@@ -89,10 +89,15 @@ end
 -- Drop all queries for class CHAOS
 addAction(QClassRule(DNSClass.CHAOS), DropAction())
 
--- Block hosts for 30 minutes that exceed 100 queries in 10 seconds
-function maintenance()
-    addDynBlocks(exceedQRate(100, 10), "Exceeded query rate", 1800)
-end
+-- Delay queries if exceeding 100 queries per second per ip
+addAction(MaxQPSIPRule(100), DelayAction(100))
+
+-- Drop queries if exceeding 500 queries per second per ip
+addAction(MaxQPSIPRule(500), DropAction())
+
+-- Cache responses
+local packet_cache = newPacketCache(10000)
+getPool(""):setCache(packet_cache)
 
 -- Include additional configurations
 includeDirectory("/etc/dnsdist/conf.d")

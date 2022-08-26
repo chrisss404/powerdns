@@ -62,7 +62,7 @@ RUN apk add --no-cache h2o libedit libsodium lmdb lua nghttp2 protobuf re2 && \
     addgroup -S dnsdist && \
     adduser -S -D -G dnsdist dnsdist && \
     mkdir -p /etc/dnsdist /var/lib/dnsdist && \
-    touch /etc/dnsdist/blacklist.txt
+    touch /etc/dnsdist/blocklist.txt
 
 COPY --from=builder /usr/local/bin /usr/bin/
 COPY ./docker-entrypoint.sh /usr/bin/

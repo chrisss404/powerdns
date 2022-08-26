@@ -42,7 +42,7 @@ Create private-recursor.yml like this:
           - DNSDIST_DNS_OVER_TLS=yes
           - DNSDIST_DNS_OVER_TLS_DOMAIN=dot.example.com
         volumes:
-          - "./blacklist.txt:/etc/dnsdist/blacklist.txt:ro"
+          - "./blocklist.txt:/etc/dnsdist/blocklist.txt:ro"
         volumes_from:
           - gateway:ro
         networks:
@@ -67,7 +67,7 @@ Create private-recursor.yml like this:
           config:
             - subnet: "172.31.117.0/24"
 
-Create `blacklist.txt` like this:
+Create `blocklist.txt` like this:
 
     googleadservices.com
     ...

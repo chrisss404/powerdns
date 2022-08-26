@@ -30,7 +30,7 @@ services:
       - DNSDIST_DNS_OVER_TLS=yes
       - DNSDIST_DNS_OVER_TLS_DOMAIN=dot.example.com
     volumes:
-      - "./blacklist.txt:/etc/dnsdist/blacklist.txt:ro"
+      - "./blocklist.txt:/etc/dnsdist/blocklist.txt:ro"
     volumes_from:
       - gateway:ro
     networks:
