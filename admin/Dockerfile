@@ -1,4 +1,4 @@
-FROM alpine:3.15 AS builder
+FROM alpine:3.17 AS builder
 
 ENV FLASK_APP=/build/powerdnsadmin/__init__.py
 
@@ -27,10 +27,7 @@ RUN git clone -n https://github.com/ngoduykhanh/PowerDNS-Admin.git /build && \
 WORKDIR /build
 
 # Get application dependencies
-RUN sed -i 's/Flask==1.1.2/Flask==1.1.4\nmarkupsafe==2.0.1/g' requirements.txt && \
-    sed -i 's/Jinja2==3.0.3/Jinja2==2.11.3/g' requirements.txt && \
-    sed -i 's/itsdangerous==2.0.1/itsdangerous==1.1.0/g' requirements.txt && \
-    sed -i 's/werkzeug==2.0.3/werkzeug==1.0.1/g' requirements.txt && \
+RUN sed -i 's/PyYAML==5.4/PyYAML==5.3.1/g' requirements.txt && \
     pip install -r requirements.txt
 
 # Prepare assets
@@ -72,7 +69,7 @@ RUN pip install pip-autoremove && \
 
 
 # Build image
-FROM alpine:3.15
+FROM alpine:3.17
 
 ENV FLASK_APP=/var/www/pdns-admin/powerdnsadmin/__init__.py
 
@@ -81,7 +78,7 @@ RUN apk add --no-cache libldap postgresql-client py3-gunicorn py3-psycopg2 xmlse
     adduser -S -D -G pda pda
 
 COPY --from=builder /usr/bin/flask /usr/bin/
-COPY --from=builder /usr/lib/python3.9/site-packages /usr/lib/python3.9/site-packages/
+COPY --from=builder /usr/lib/python3.10/site-packages /usr/lib/python3.10/site-packages/
 COPY --from=builder --chown=pda:pda /var/www/pdns-admin /var/www/pdns-admin/
 COPY ./docker-entrypoint.sh /usr/bin/
 
