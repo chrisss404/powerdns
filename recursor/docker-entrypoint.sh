@@ -6,13 +6,12 @@ if [ "$1" = "pdns_recursor" ] && [ ! -f /etc/pdns-recursor/recursor.conf ]; then
 
     sed -i "s|# allow-from=127.0.0.0/8, 10.0.0.0/8, 100.64.0.0/10, 169.254.0.0/16, 192.168.0.0/16, 172.16.0.0/12, ::1/128, fc00::/7, fe80::/10|allow-from=${RECURSOR_ALLOW_FROM:-127.0.0.0/8, 10.0.0.0/8, 100.64.0.0/10, 169.254.0.0/16, 192.168.0.0/16, 172.16.0.0/12, ::1/128, fc00::/7, fe80::/10}|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# api-key=|api-key=${RECURSOR_API_KEY:-pdns}|g" /etc/pdns-recursor/recursor.conf
-    sed -i "s|# api-readonly=no|api-readonly=${RECURSOR_API_READONLY:-yes}|g" /etc/pdns-recursor/recursor.conf
 
     sed -i "s|# daemon=no|daemon=no|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# write-pid=yes|write-pid=no|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# disable-syslog=no|disable-syslog=yes|g" /etc/pdns-recursor/recursor.conf
 
-    sed -i "s|# dnssec=process-no-validate|dnssec=${RECURSOR_DNSSEC:-process-no-validate}|g" /etc/pdns-recursor/recursor.conf
+    sed -i "s|# dnssec=process|dnssec=${RECURSOR_DNSSEC:-process-no-validate}|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# dnssec-log-bogus=no|dnssec-log-bogus=yes|g" /etc/pdns-recursor/recursor.conf
 
     sed -i "s|# forward-zones=|forward-zones=${RECURSOR_FORWARD_ZONES}|g" /etc/pdns-recursor/recursor.conf
@@ -24,7 +23,6 @@ if [ "$1" = "pdns_recursor" ] && [ ! -f /etc/pdns-recursor/recursor.conf ]; then
     sed -i "s|# lua-config-file=|lua-config-file=/etc/pdns-recursor/config.lua|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# lua-dns-script=|lua-dns-script=/etc/pdns-recursor/dns.lua|g" /etc/pdns-recursor/recursor.conf
 
-    sed -i "s|# query-local-address6=|query-local-address6=::|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# quiet=|quiet=${RECURSOR_QUIET:-no}|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# socket-dir=|socket-dir=/var/run|g" /etc/pdns-recursor/recursor.conf
     sed -i "s|# version-string=.*|version-string=anonymous|g" /etc/pdns-recursor/recursor.conf
