@@ -9,7 +9,6 @@ if [ "$1" = "pdns_server" ] && [ ! -f /etc/pdns/pdns.conf ]; then
 
     sed -i "s|# api=no|api=${AUTHORITATIVE_API:-no}|g" /etc/pdns/pdns.conf
     sed -i "s|# api-key=|api-key=${AUTHORITATIVE_API_KEY:-pdns}|g" /etc/pdns/pdns.conf
-    sed -i "s|# api-readonly=no|api-readonly=${AUTHORITATIVE_API_READONLY:-no}|g" /etc/pdns/pdns.conf
 
     sed -i "s|# daemon=no|daemon=no|g" /etc/pdns/pdns.conf
     sed -i "s|# direct-dnskey=no|direct-dnskey=${AUTHORITATIVE_DIRECT_DNSKEY:-no}|g" /etc/pdns/pdns.conf
@@ -17,7 +16,6 @@ if [ "$1" = "pdns_server" ] && [ ! -f /etc/pdns/pdns.conf ]; then
     sed -i "s|# guardian=no|guardian=no|g" /etc/pdns/pdns.conf
     sed -i "s|# write-pid=yes|write-pid=no|g" /etc/pdns/pdns.conf
     sed -i "s|# disable-syslog=no|disable-syslog=yes|g" /etc/pdns/pdns.conf
-    sed -i "s|# disable-tcp=no|disable-tcp=no|g" /etc/pdns/pdns.conf
 
     sed -i "s|# local-address=0.0.0.0, ::|local-address=0.0.0.0, ::|g" /etc/pdns/pdns.conf
     sed -i "s|# local-port=53|local-port=53|g" /etc/pdns/pdns.conf

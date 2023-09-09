@@ -264,7 +264,6 @@ Then you can do the following:
 | AUTHORITATIVE_ALLOW_NOTIFY_FROM           | Allow AXFR NOTIFY from these IP ranges (default: 0.0.0.0/0,::/0)                                                                        |
 | AUTHORITATIVE_API                         | Enable/disable the REST API (default: no)                                                                                               |
 | AUTHORITATIVE_API_KEY                     | Static pre-shared authentication key for access to the REST API (default: pdns)                                                         |
-| AUTHORITATIVE_API_READONLY                | Disallow data modification through the REST API when set (default: no)                                                                  |
 | AUTHORITATIVE_DB_HOST                     | Postgres host (default: authoritative-db)                                                                                               |
 | AUTHORITATIVE_DB_NAME                     | Postgres database (default: pdns)                                                                                                       |
 | AUTHORITATIVE_DB_PASS                     | Postgres password (default: pdns)                                                                                                       |
@@ -323,7 +322,6 @@ Then you can do the following:
 |--------------------------------|-------------------------------------------------------------------------------------------------------------|
 | RECURSOR_ALLOW_FROM            | If set, only allow these comma separated netmasks to recurse                                                |
 | RECURSOR_API_KEY               | Static pre-shared authentication key for access to the REST API (default: pdns)                             |
-| RECURSOR_API_READONLY          | Disallow data modification through the REST API when set (default: yes)                                     |
 | RECURSOR_DNSSEC                | DNSSEC mode: off / process-no-validate (default) / process / log-fail / validate                            |
 | RECURSOR_FORWARD_ZONES         | Zones for which we forward queries, comma separated domain=ip pairs                                         |
 | RECURSOR_FORWARD_ZONES_RECURSE | Zones for which we forward queries with recursion bit, comma separated domain=ip pairs                      |

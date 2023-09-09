@@ -1,4 +1,4 @@
-FROM alpine:3.15 AS builder
+FROM alpine:3.17 AS builder
 
 ENV FLASK_APP=/build/powerdnsadmin/__init__.py
 
@@ -8,8 +8,10 @@ ARG BUILD_DEPENDENCIES="build-base \
     cargo \
     git \
     libffi-dev \
+    libpq-dev \
     libxml2-dev \
     mariadb-connector-c-dev \
+    npm \
     openldap-dev \
     python3-dev \
     xmlsec-dev \
@@ -27,21 +29,21 @@ RUN git clone -n https://github.com/ngoduykhanh/PowerDNS-Admin.git /build && \
 WORKDIR /build
 
 # Get application dependencies
-RUN sed -i 's/Flask==1.1.2/Flask==1.1.4\nmarkupsafe==2.0.1/g' requirements.txt && \
-    sed -i 's/Jinja2==3.0.3/Jinja2==2.11.3/g' requirements.txt && \
-    sed -i 's/itsdangerous==2.0.1/itsdangerous==1.1.0/g' requirements.txt && \
-    sed -i 's/werkzeug==2.0.3/werkzeug==1.0.1/g' requirements.txt && \
+RUN sed -i 's/PyYAML==5.4/PyYAML==5.3.1/g' requirements.txt && \
     pip install -r requirements.txt
 
 # Prepare assets
 RUN yarn install --pure-lockfile --production && \
     yarn cache clean && \
-    sed -i -r -e "s|'cssmin',\s?'cssrewrite'|'cssmin'|g" /build/powerdnsadmin/assets.py && \
+    sed -i -r -e "s|'rcssmin',\s?'cssrewrite'|'rcssmin'|g" /build/powerdnsadmin/assets.py && \
     flask assets build
 
 RUN mv /build/powerdnsadmin/static /tmp/static && \
     mkdir /build/powerdnsadmin/static && \
     cp -r /tmp/static/generated /build/powerdnsadmin/static && \
+    cp -r /tmp/static/assets /build/powerdnsadmin/static && \
+    cp -r /tmp/static/img /build/powerdnsadmin/static && \
+    find /tmp/static/node_modules -name 'webfonts' -exec cp -r {} /build/powerdnsadmin/static \; && \
     find /tmp/static/node_modules -name 'fonts' -exec cp -r {} /build/powerdnsadmin/static \; && \
     find /tmp/static/node_modules/icheck/skins/square -name '*.png' -exec cp {} /build/powerdnsadmin/static/generated \;
 
@@ -72,7 +74,7 @@ RUN pip install pip-autoremove && \
 
 
 # Build image
-FROM alpine:3.15
+FROM alpine:3.17
 
 ENV FLASK_APP=/var/www/pdns-admin/powerdnsadmin/__init__.py
 
@@ -81,7 +83,7 @@ RUN apk add --no-cache libldap postgresql-client py3-gunicorn py3-psycopg2 xmlse
     adduser -S -D -G pda pda
 
 COPY --from=builder /usr/bin/flask /usr/bin/
-COPY --from=builder /usr/lib/python3.9/site-packages /usr/lib/python3.9/site-packages/
+COPY --from=builder /usr/lib/python3.10/site-packages /usr/lib/python3.10/site-packages/
 COPY --from=builder --chown=pda:pda /var/www/pdns-admin /var/www/pdns-admin/
 COPY ./docker-entrypoint.sh /usr/bin/
 
