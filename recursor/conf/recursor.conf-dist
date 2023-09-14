@@ -108,7 +108,7 @@
 #################################
 # config-dir	Location of configuration directory (recursor.conf)
 #
-# config-dir=/etc/pdns-recursor
+# config-dir=/etc/powerdns
 
 #################################
 # config-name	Name of this virtual configuration - will rename the binary image
@@ -261,7 +261,7 @@
 # edns-padding-from=
 
 #################################
-# edns-padding-mode	Whether to add EDNS padding to all responses ('always') or only to responses for queries containing the EDNS padding option ('padded-queries-only', the default). In both modes, padding will only be added to responses for queries coming from `edns-padding-from`_ sources
+# edns-padding-mode	Whether to add EDNS padding to all responses ('always') or only to responses for queries containing the EDNS padding option ('padded-queries-only', the default). In both modes, padding will only be added to responses for queries coming from 'setting-edns-padding-from' sources
 #
 # edns-padding-mode=padded-queries-only
 
@@ -303,7 +303,7 @@
 #################################
 # export-etc-hosts	If we should serve up contents from /etc/hosts
 #
-# export-etc-hosts=off
+# export-etc-hosts=no
 
 #################################
 # export-etc-hosts-search-suffix	Also serve up the contents of /etc/hosts with this suffix
@@ -396,7 +396,7 @@
 # lua-config-file=
 
 #################################
-# lua-dns-script	Filename containing an optional 'lua' script that will be used to modify dns answers
+# lua-dns-script	Filename containing an optional Lua script that will be used to modify dns answers
 #
 # lua-dns-script=
 
@@ -553,7 +553,7 @@
 #################################
 # no-shuffle	Don't change
 #
-# no-shuffle=off
+# no-shuffle=no
 
 #################################
 # non-local-bind	Enable binding to non-local addresses by using FREEBIND / BINDANY socket options
@@ -613,7 +613,7 @@
 #################################
 # protobuf-use-kernel-timestamp	Compute the latency of queries in protobuf messages by using the timestamp set by the kernel when the query was received (when available)
 #
-# protobuf-use-kernel-timestamp=
+# protobuf-use-kernel-timestamp=no
 
 #################################
 # proxy-protocol-from	A Proxy Protocol header is only allowed from these subnets
@@ -643,7 +643,7 @@
 #################################
 # quiet	Suppress logging of questions and answers
 #
-# quiet=
+# quiet=yes
 
 #################################
 # record-cache-locked-ttl-perc	Replace records in record cache only after this % of original TTL has passed
@@ -708,7 +708,7 @@
 #################################
 # server-id	Returned when queried for 'id.server' TXT or NSID, defaults to hostname, set custom or 'disabled'
 #
-# server-id=
+# server-id=*runtime determined*
 
 #################################
 # setgid	If set, change group id to this gid for more security
@@ -728,7 +728,7 @@
 #################################
 # single-socket	If set, only use a single socket for outgoing queries
 #
-# single-socket=off
+# single-socket=no
 
 #################################
 # snmp-agent	If set, register as an SNMP agent
@@ -883,7 +883,7 @@
 #################################
 # trace	if we should output heaps of logging. set to 'fail' to only log failing domains
 #
-# trace=off
+# trace=no
 
 #################################
 # udp-source-port-avoid	List of comma separated UDP port number to avoid
@@ -938,7 +938,7 @@
 #################################
 # version-string	string reported on version.pdns or version.bind
 #
-# version-string=PowerDNS Recursor 2023-09-08 (built Sep  8 2023 18:51:00 by root@localhost)
+# version-string=*runtime determined*
 
 #################################
 # webserver	Start a webserver (for REST API)
@@ -953,7 +953,7 @@
 #################################
 # webserver-allow-from	Webserver access is only allowed from these subnets
 #
-# webserver-allow-from=127.0.0.1,::1
+# webserver-allow-from=127.0.0.1, ::1
 
 #################################
 # webserver-hash-plaintext-credentials	Whether to hash passwords and api keys supplied in plaintext, to prevent keeping the plaintext version in memory at runtime

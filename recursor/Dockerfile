@@ -10,6 +10,7 @@ RUN apk add --no-cache \
         autoconf \
         automake \
         boost-dev \
+        cargo \
         curl \
         file \
         g++ \
@@ -36,7 +37,7 @@ RUN export BUILDER_VERSION=$([ "${RECURSOR_VERSION}" = "latest" ] && echo `date 
     sed -i -e "s|dist_man_MANS=\$(MANPAGES)|MANPAGES=\ndist_man_MANS=\$(MANPAGES)|g" Makefile.am && \
     autoreconf -vif && \
     CFLAGS=${COMPILER_FLAGS} CXXFLAGS=${COMPILER_FLAGS} LDFLAGS=${LINKER_FLAGS} ./configure \
-            --sysconfdir=/etc/pdns-recursor \
+            --sysconfdir=/etc/powerdns \
             --enable-nod \
             --with-libsodium \
             --with-lua \
@@ -55,7 +56,7 @@ RUN apk add --no-cache boost-context boost-filesystem boost-system libsodium lua
 
 COPY --from=builder /usr/local/bin /usr/bin/
 COPY --from=builder /usr/local/sbin /usr/sbin/
-COPY --from=builder /etc/pdns-recursor /etc/pdns-recursor/
+COPY --from=builder /etc/powerdns /etc/powerdns/
 COPY ./docker-entrypoint.sh /usr/bin/
 
 EXPOSE 53/tcp 53/udp 8082/tcp
