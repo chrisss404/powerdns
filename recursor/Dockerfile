@@ -57,6 +57,7 @@ RUN apk add --no-cache boost-context boost-filesystem boost-system libsodium lua
 COPY --from=builder /usr/local/bin /usr/bin/
 COPY --from=builder /usr/local/sbin /usr/sbin/
 COPY --from=builder /etc/powerdns /etc/powerdns/
+COPY ./conf /etc/powerdns/
 COPY ./docker-entrypoint.sh /usr/bin/
 
 EXPOSE 53/tcp 53/udp 8082/tcp
