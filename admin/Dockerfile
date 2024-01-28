@@ -73,7 +73,7 @@ FROM alpine:3.17
 
 ENV FLASK_APP=/var/www/pdns-admin/powerdnsadmin/__init__.py
 
-RUN apk add --no-cache libldap postgresql-client py3-gunicorn py3-psycopg2 xmlsec && \
+RUN apk add --no-cache libldap postgresql-client py3-gunicorn py3-psycopg2 tzdata xmlsec && \
     addgroup -S pda && \
     adduser -S -D -G pda pda
 
