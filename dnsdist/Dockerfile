@@ -58,7 +58,7 @@ RUN export BUILDER_VERSION=$([ "${DNSDIST_VERSION}" = "latest" ] && echo `date +
 # Build image
 FROM alpine:3.18
 
-RUN apk add --no-cache h2o libedit libsodium lmdb lua5.1-libs nghttp2 protobuf re2 && \
+RUN apk add --no-cache h2o libedit libsodium lmdb lua5.1-libs nghttp2 protobuf re2 tzdata && \
     addgroup -S dnsdist && \
     adduser -S -D -G dnsdist dnsdist && \
     mkdir -p /etc/dnsdist /var/lib/dnsdist && \
