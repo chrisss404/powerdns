@@ -1,6 +1,6 @@
 FROM alpine:3.15 AS builder
 
-ARG RECURSOR_VERSION="4.9.1"
+ARG RECURSOR_VERSION="4.9.3"
 
 ARG COMPILER_FLAGS="-Os -fomit-frame-pointer"
 ARG LINKER_FLAGS="-Wl,--as-needed"
@@ -49,7 +49,7 @@ RUN export BUILDER_VERSION=$([ "${RECURSOR_VERSION}" = "latest" ] && echo `date 
 # Build image
 FROM alpine:3.15
 
-RUN apk add --no-cache boost-context boost-filesystem boost-system libsodium lua protobuf && \
+RUN apk add --no-cache boost-context boost-filesystem boost-system libsodium lua protobuf tzdata && \
     addgroup -S recursor && \
     adduser -S -D -G recursor recursor
 
