@@ -45,7 +45,7 @@ services:
   recursor:
     build: recursor
     environment:
-      - RECURSOR_QUIET=no
+      - RECURSOR_QUIET=false
     sysctls:
       - net.ipv6.route.max_size=16384
     ports:

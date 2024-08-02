@@ -1,4 +1,4 @@
-FROM alpine:3.18 AS builder
+FROM alpine:3.20 AS builder
 
 ARG RECURSOR_VERSION="latest"
 
@@ -48,16 +48,15 @@ RUN export BUILDER_VERSION=$([ "${RECURSOR_VERSION}" = "latest" ] && echo `date 
 
 
 # Build image
-FROM alpine:3.18
+FROM alpine:3.20
 
-RUN apk add --no-cache boost-context boost-filesystem boost-system libsodium lua5.1-libs protobuf tzdata && \
+RUN apk add --no-cache boost-context boost-filesystem boost-system libsodium lua5.1-libs protobuf tzdata yq && \
     addgroup -S recursor && \
     adduser -S -D -G recursor recursor
 
 COPY --from=builder /usr/local/bin /usr/bin/
 COPY --from=builder /usr/local/sbin /usr/sbin/
 COPY --from=builder /etc/powerdns /etc/powerdns/
-COPY ./conf /etc/powerdns/
 COPY ./docker-entrypoint.sh /usr/bin/
 
 EXPOSE 53/tcp 53/udp 8082/tcp
