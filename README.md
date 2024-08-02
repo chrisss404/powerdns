@@ -185,10 +185,10 @@ Create private-authoritative.yml like this:
         environment:
           - RECURSOR_API_KEY=api-secret-recursor
           - RECURSOR_DNSSEC=validate
-          - RECURSOR_FORWARD_ZONES=sys=172.31.118.118
-          - RECURSOR_QUIET=no
+          - RECURSOR_FORWARD_ZONES="sys=172.31.118.118"
+          - RECURSOR_QUIET=false
           - RECURSOR_TRUST_ANCHORS=sys=54970 13 1 27efe1c1a790c3cbb43b947d6d6dfac62507097e
-          - RECURSOR_WEBSERVER=yes
+          - RECURSOR_WEBSERVER=true
           - RECURSOR_WEBSERVER_PASSWORD=web-secret-recursor
         sysctls:
           - net.ipv6.route.max_size=16384
@@ -325,12 +325,12 @@ Then you can do the following:
 | RECURSOR_DNSSEC                | DNSSEC mode: off / process-no-validate (default) / process / log-fail / validate                            |
 | RECURSOR_FORWARD_ZONES         | Zones for which we forward queries, comma separated domain=ip pairs                                         |
 | RECURSOR_FORWARD_ZONES_RECURSE | Zones for which we forward queries with recursion bit, comma separated domain=ip pairs                      |
-| RECURSOR_LOGLEVEL              | Amount of logging. Higher is more. Do not set below 3 (default: 3)                                          |
-| RECURSOR_QUIET                 | Suppress logging of questions and answers (default: no)                                                     |
+| RECURSOR_LOGLEVEL              | Amount of logging. Higher is more. Do not set below 3 (default: 6)                                          |
+| RECURSOR_QUIET                 | Suppress logging of questions and answers (default: false)                                                  |
 | RECURSOR_SECURITY_POLL_SUFFIX  | Domain name from which to query security update notifications (default: secpoll.powerdns.com.)              |
 | RECURSOR_TCP_FAST_OPEN         | Enable TCP Fast Open support on the listening sockets, using the supplied numerical value as the queue size |
 | RECURSOR_THREADS               | Launch this number of threads                                                                               |
 | RECURSOR_TRUST_ANCHORS         | Trust anchors for private zones when using DNSSEC validation, comma separated domain=ds-key pairs           |
-| RECURSOR_WEBSERVER             | Start a webserver for REST API on port 8082 (default: no)                                                   |
+| RECURSOR_WEBSERVER             | Start a webserver for REST API on port 8082 (default: false)                                                |
 | RECURSOR_WEBSERVER_PASSWORD    | Password required for accessing the webserver (default: pdns)                                               |
 
