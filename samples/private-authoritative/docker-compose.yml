@@ -72,7 +72,7 @@ services:
     environment:
       - RECURSOR_API_KEY=api-secret-recursor
       - RECURSOR_DNSSEC=validate
-      - RECURSOR_FORWARD_ZONES="sys=172.31.118.118"
+      - RECURSOR_FORWARD_ZONES={"zone":"sys","forwarders":["172.31.118.118"]}
       - RECURSOR_QUIET=false
       - RECURSOR_TRUST_ANCHORS="sys=54970 13 1 27efe1c1a790c3cbb43b947d6d6dfac62507097e"
       - RECURSOR_WEBSERVER=true
