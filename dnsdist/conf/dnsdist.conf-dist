@@ -1,4 +1,3 @@
-
 function file_exists(name)
    local file = io.open(name, "r")
    if file ~= nil then
