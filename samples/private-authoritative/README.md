@@ -2,7 +2,7 @@
 ### Start
 
     # start powerdns stack
-    docker-compose up
+    docker compose up
 
 
 ## Test

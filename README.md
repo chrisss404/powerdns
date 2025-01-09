@@ -10,8 +10,6 @@ Simple example of an ad blocking private recursor that is listening for DNSCrypt
 
 Create private-recursor.yml like this:
 
-    version: '2.1'
-    
     services:
     
       gateway:
@@ -75,10 +73,10 @@ Create `blocklist.txt` like this:
 Then you can do the following:
 
     # start secure recursor (restart dnsdist after the let's encrypt certificate is created)
-    docker-compose -f private-recursor.yml up
+    docker compose -f private-recursor.yml up
     
     # get DNSCrypt provider public key fingerprint
-    docker-compose -f private-recursor.yml exec dnsdist dnsdist -e 'printDNSCryptProviderFingerprint("/var/lib/dnsdist/providerPublic.key")'
+    docker compose -f private-recursor.yml exec dnsdist dnsdist -e 'printDNSCryptProviderFingerprint("/var/lib/dnsdist/providerPublic.key")'
     
     # create DNS stamp using python dnsstamps library or visit https://dnscrypt.info/stamps
     dnsstamp.py dnscrypt -s -a 1.2.3.4:8443 -n 2.dnscrypt-cert.example.com -k 2251:468C:FE4C:C39F:9DF3:C2BA:7C95:ED8F:94F6:06BC:7A24:0493:D168:DE9E:7682:E8AD
@@ -111,8 +109,6 @@ Simple example of full powerdns stack including private authoritative nameserver
 
 Create private-authoritative.yml like this:
 
-    version: '2.1'
-    
     services:
 
       admin:
@@ -217,7 +213,7 @@ Create private-authoritative.yml like this:
 Then you can do the following:
 
     # start powerdns stack
-    docker-compose -f private-authoritative.yml up
+    docker compose -f private-authoritative.yml up
     
     # send DNS queries
     dig -p 1053 example.com

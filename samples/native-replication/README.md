@@ -67,10 +67,10 @@ Therefore, it has to be set to an ip-address the slave database container is abl
 After configuring the ip-address for the domain clu01.auth-db.internal in slave.yml you are ready to go. 
 
     # Start master and wait until it is up and running
-    docker-compose -f master.yml up
+    docker compose -f master.yml up
     
     # Start slave
-    docker-compose -f slave.yml up
+    docker compose -f slave.yml up
 
 
 ## Test
