@@ -1,4 +1,4 @@
-FROM alpine:3.18 AS builder
+FROM alpine:3.21 AS builder
 
 ARG DNSDIST_VERSION="latest"
 
@@ -15,7 +15,6 @@ RUN apk add --no-cache \
         file \
         g++ \
         git \
-        h2o-dev \
         lua-dev \
         libedit-dev \
         libsodium-dev \
@@ -56,9 +55,9 @@ RUN export BUILDER_VERSION=$([ "${DNSDIST_VERSION}" = "latest" ] && echo `date +
 
 
 # Build image
-FROM alpine:3.18
+FROM alpine:3.21
 
-RUN apk add --no-cache h2o libedit libsodium lmdb lua5.1-libs nghttp2 protobuf re2 tzdata && \
+RUN apk add --no-cache abseil-cpp-vlog-config-internal libedit libsodium lmdb lua5.1-libs nghttp2 protobuf re2 tzdata && \
     addgroup -S dnsdist && \
     adduser -S -D -G dnsdist dnsdist && \
     mkdir -p /etc/dnsdist /var/lib/dnsdist && \
