@@ -11,7 +11,7 @@ end
 
 -- Expose commandline console
 controlSocket('127.0.0.1:5199')
-setKey("YjsDePSLCZxErIOmBSd117W8V92ZOMbqlnRVnWomIjw=")
+setKey("replaceMe")
 
 -- Set ACLs
 setACL('0.0.0.0/0')
@@ -96,7 +96,7 @@ addAction(MaxQPSIPRule(100), DelayAction(100))
 addAction(MaxQPSIPRule(500), DropAction())
 
 -- Cache responses
-local packet_cache = newPacketCache(10000)
+local packet_cache = newPacketCache(100000)
 getPool(""):setCache(packet_cache)
 
 -- Include additional configurations

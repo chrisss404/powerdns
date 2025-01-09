@@ -72,6 +72,6 @@ VOLUME ["/var/lib/dnsdist"]
 
 EXPOSE 53/tcp 53/udp 443/tcp 853/tcp 8083/tcp 8443/tcp 8443/udp
 
-HEALTHCHECK CMD ["dnsdist", "-e", "showVersion()", "||", "exit", "1"]
+HEALTHCHECK CMD ["dnsdist", "-C", "/etc/dnsdist/control-socket.conf", "-e", "showVersion()", "||", "exit", "1"]
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["dnsdist", "--supervised", "--disable-syslog", "--uid", "dnsdist", "--gid", "dnsdist"]
