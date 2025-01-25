@@ -24,6 +24,7 @@ RUN apk add --no-cache \
         nghttp2-dev \
         openssl-dev \
         protobuf-dev \
+        py3-pyaml \
         py3-virtualenv \
         ragel \
         re2-dev
