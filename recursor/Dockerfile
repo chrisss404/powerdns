@@ -1,4 +1,4 @@
-FROM alpine:3.21 AS builder
+FROM alpine:3.24 AS builder
 
 ARG RECURSOR_VERSION="latest"
 
@@ -7,22 +7,17 @@ ARG LINKER_FLAGS="-Wl,--as-needed"
 
 # Get dependencies
 RUN apk add --no-cache \
-        autoconf \
-        automake \
         boost-dev \
         cargo \
         curl \
-        file \
         g++ \
         git \
         libsodium-dev \
-        libtool \
         lua-dev \
-        make \
+        meson \
         openssl-dev \
-        patch \
         protobuf-dev \
-        py3-virtualenv \
+        python3 \
         ragel
 
 # Download sources
@@ -34,21 +29,17 @@ WORKDIR /build/pdns/recursordist
 
 # Compile
 RUN export BUILDER_VERSION=$([ "${RECURSOR_VERSION}" = "latest" ] && echo `date +%Y-%m-%d` || echo "${RECURSOR_VERSION}") && \
-    sed -i -e "s|dist_man_MANS=\$(MANPAGES)|MANPAGES=\ndist_man_MANS=\$(MANPAGES)|g" Makefile.am && \
-    autoreconf -vif && \
-    CFLAGS=${COMPILER_FLAGS} CXXFLAGS=${COMPILER_FLAGS} LDFLAGS=${LINKER_FLAGS} ./configure \
+    CFLAGS=${COMPILER_FLAGS} CXXFLAGS=${COMPILER_FLAGS} LDFLAGS=${LINKER_FLAGS} meson setup build \
             --sysconfdir=/etc/powerdns \
-            --enable-nod \
-            --with-libsodium \
-            --with-lua \
-            --disable-shared \
-            --enable-static && \
-    make dist -j $(nproc) && \
-    make install-strip
+            -Dnod=enabled \
+            -Dsystemd-service=disabled \
+            -Ddefault_library=static && \
+    meson compile -C build && \
+    meson install -C build --strip
 
 
 # Build image
-FROM alpine:3.21
+FROM alpine:3.24
 
 RUN apk add --no-cache boost-context boost-filesystem boost-system libsodium lua5.1-libs protobuf tzdata yq && \
     addgroup -S recursor && \

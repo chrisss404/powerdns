@@ -1,4 +1,4 @@
-FROM alpine:3.21 AS builder
+FROM alpine:3.24 AS builder
 
 ARG DNSDIST_VERSION="latest"
 
@@ -7,20 +7,15 @@ ARG LINKER_FLAGS="-Wl,--as-needed"
 
 # Get dependencies
 RUN apk add --no-cache \
-        autoconf \
-        automake \
         boost-dev \
-        cmake \
         curl \
-        file \
         g++ \
         git \
         lua-dev \
         libedit-dev \
         libsodium-dev \
-        libtool \
         lmdb-dev \
-        make \
+        meson \
         nghttp2-dev \
         openssl-dev \
         protobuf-dev \
@@ -38,25 +33,21 @@ WORKDIR /build/pdns/dnsdistdist
 
 # Compile
 RUN export BUILDER_VERSION=$([ "${DNSDIST_VERSION}" = "latest" ] && echo `date +%Y-%m-%d` || echo "${DNSDIST_VERSION}") && \
-    sed -i -e "s|dist_man_MANS=\$(MANPAGES)|MANPAGES=\ndist_man_MANS=\$(MANPAGES)|g" Makefile.am && \
-    autoreconf -vif && \
-    CFLAGS=${COMPILER_FLAGS} CXXFLAGS=${COMPILER_FLAGS} LDFLAGS=${LINKER_FLAGS} ./configure \
+    CFLAGS=${COMPILER_FLAGS} CXXFLAGS=${COMPILER_FLAGS} LDFLAGS=${LINKER_FLAGS} meson setup build \
             --sysconfdir=/etc/dnsdist \
-            --enable-dnscrypt \
-            --enable-dns-over-https \
-            --enable-dns-over-tls \
-            --with-libsodium \
-            --with-lua \
-            --with-nghttp2 \
-            --with-re2 \
-            --disable-shared \
-            --enable-static && \
-    make dist -j $(nproc) && \
-    make install-strip
+            -Ddnscrypt=enabled \
+            -Ddns-over-https=enabled \
+            -Ddns-over-tls=enabled \
+            -Dlibsodium=enabled \
+            -Dre2=enabled \
+            -Dsystemd-service=disabled \
+            -Ddefault_library=static && \
+    meson compile -C build && \
+    meson install -C build --strip
 
 
 # Build image
-FROM alpine:3.21
+FROM alpine:3.24
 
 RUN apk add --no-cache abseil-cpp-vlog-config-internal libedit libsodium lmdb lua5.1-libs nghttp2 protobuf re2 tzdata && \
     addgroup -S dnsdist && \
