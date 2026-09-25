@@ -2,7 +2,7 @@ FROM alpine:3.24 AS builder
 
 ENV FLASK_APP=/build/powerdnsadmin/__init__.py
 
-ARG ADMIN_VERSION="nightly"
+ARG ADMIN_VERSION="6b3b9cc"
 
 ARG BUILD_DEPENDENCIES="build-base \
     cargo \
