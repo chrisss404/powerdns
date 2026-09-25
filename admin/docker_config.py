@@ -1,0 +1,37 @@
+import os
+import urllib.parse
+
+BIND_ADDRESS = '0.0.0.0'
+CAPTCHA_ENABLE = True
+CAPTCHA_HEIGHT = 60
+CAPTCHA_LENGTH = 6
+CAPTCHA_SESSION_KEY = 'captcha_image'
+CAPTCHA_WIDTH = 160
+CSRF_COOKIE_HTTPONLY = True
+HSTS_ENABLED = False
+PORT = 9191
+SALT = '$2b$12$yLUMTIfl21FKJQpTkRQXCu'
+SAML_ASSERTION_ENCRYPTED = True
+SAML_ENABLED = False
+SAML_LOWERCASE_URLENCODING = False
+SECRET_KEY = 'e951e5a1f4b94151b360f47edf596dd2'
+SERVER_EXTERNAL_SSL = os.getenv('SERVER_EXTERNAL_SSL', True)
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_CLEANUP_N_REQUESTS = 100
+SESSION_TYPE = os.getenv('SESSION_TYPE', 'sqlalchemy')
+SQLALCHEMY_TRACK_MODIFICATIONS = True
+SQLALCHEMY_ENGINE_OPTIONS = {
+    'pool_pre_ping': True,
+    'pool_recycle': 600,
+}
+SQLA_DB_USER = 'pda'
+SQLA_DB_PASSWORD = 'pda'
+SQLA_DB_PORT = 5432
+SQLA_DB_HOST = 'admin-db'
+SQLA_DB_NAME = 'pda'
+SQLALCHEMY_DATABASE_URI = 'postgresql://{}:{}@{}/{}'.format(
+    urllib.parse.quote_plus(SQLA_DB_USER),
+    urllib.parse.quote_plus(SQLA_DB_PASSWORD),
+    SQLA_DB_HOST,
+    SQLA_DB_NAME
+)

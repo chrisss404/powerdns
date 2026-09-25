@@ -1,6 +1,6 @@
 FROM alpine:3.24 AS builder
 
-ARG PDNS_VERSION="latest"
+ARG PDNS_VERSION="nightly"
 
 ARG COMPILER_FLAGS="-Os -fomit-frame-pointer"
 ARG LINKER_FLAGS="-Wl,--as-needed"
@@ -30,12 +30,12 @@ RUN apk add --no-cache \
 # Download sources
 RUN git clone -n https://github.com/PowerDNS/pdns.git /build && \
     cd /build && \
-    git checkout $([ "${PDNS_VERSION}" = "latest" ] && echo "master" || echo "auth-${PDNS_VERSION}")
+    git checkout $([ "${PDNS_VERSION}" = "nightly" ] && echo "master" || echo "auth-${PDNS_VERSION}")
 
 WORKDIR /build
 
 # Compile
-RUN export BUILDER_VERSION=$([ "${PDNS_VERSION}" = "latest" ] && echo `date +%Y-%m-%d` || echo "${PDNS_VERSION}") && \
+RUN export BUILDER_VERSION=$([ "${PDNS_VERSION}" = "nightly" ] && echo `date +%Y-%m-%d` || echo "${PDNS_VERSION}") && \
     tee docs/Makefile.am && \
     autoreconf -vif && \
     CFLAGS=${COMPILER_FLAGS} CXXFLAGS=${COMPILER_FLAGS} LDFLAGS=${LINKER_FLAGS} ./configure \

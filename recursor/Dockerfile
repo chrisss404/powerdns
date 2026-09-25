@@ -1,6 +1,6 @@
 FROM alpine:3.24 AS builder
 
-ARG RECURSOR_VERSION="latest"
+ARG RECURSOR_VERSION="nightly"
 
 ARG COMPILER_FLAGS="-Os -fomit-frame-pointer"
 ARG LINKER_FLAGS="-Wl,--as-needed"
@@ -23,12 +23,12 @@ RUN apk add --no-cache \
 # Download sources
 RUN git clone -n https://github.com/PowerDNS/pdns.git /build && \
     cd /build && \
-    git checkout $([ "${RECURSOR_VERSION}" = "latest" ] && echo "master" || echo "rec-${RECURSOR_VERSION}")
+    git checkout $([ "${RECURSOR_VERSION}" = "nightly" ] && echo "master" || echo "rec-${RECURSOR_VERSION}")
 
 WORKDIR /build/pdns/recursordist
 
 # Compile
-RUN export BUILDER_VERSION=$([ "${RECURSOR_VERSION}" = "latest" ] && echo `date +%Y-%m-%d` || echo "${RECURSOR_VERSION}") && \
+RUN export BUILDER_VERSION=$([ "${RECURSOR_VERSION}" = "nightly" ] && echo `date +%Y-%m-%d` || echo "${RECURSOR_VERSION}") && \
     CFLAGS=${COMPILER_FLAGS} CXXFLAGS=${COMPILER_FLAGS} LDFLAGS=${LINKER_FLAGS} meson setup build \
             --sysconfdir=/etc/powerdns \
             -Dnod=enabled \

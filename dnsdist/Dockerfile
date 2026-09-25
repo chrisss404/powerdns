@@ -1,6 +1,6 @@
 FROM alpine:3.24 AS builder
 
-ARG DNSDIST_VERSION="latest"
+ARG DNSDIST_VERSION="nightly"
 
 ARG COMPILER_FLAGS="-Os -fomit-frame-pointer"
 ARG LINKER_FLAGS="-Wl,--as-needed"
@@ -27,12 +27,12 @@ RUN apk add --no-cache \
 # Download sources
 RUN git clone -n https://github.com/PowerDNS/pdns.git /build && \
     cd /build && \
-    git checkout $([ "${DNSDIST_VERSION}" = "latest" ] && echo "master" || echo "dnsdist-${DNSDIST_VERSION}")
+    git checkout $([ "${DNSDIST_VERSION}" = "nightly" ] && echo "master" || echo "dnsdist-${DNSDIST_VERSION}")
 
 WORKDIR /build/pdns/dnsdistdist
 
 # Compile
-RUN export BUILDER_VERSION=$([ "${DNSDIST_VERSION}" = "latest" ] && echo `date +%Y-%m-%d` || echo "${DNSDIST_VERSION}") && \
+RUN export BUILDER_VERSION=$([ "${DNSDIST_VERSION}" = "nightly" ] && echo `date +%Y-%m-%d` || echo "${DNSDIST_VERSION}") && \
     CFLAGS=${COMPILER_FLAGS} CXXFLAGS=${COMPILER_FLAGS} LDFLAGS=${LINKER_FLAGS} meson setup build \
             --sysconfdir=/etc/dnsdist \
             -Ddnscrypt=enabled \
