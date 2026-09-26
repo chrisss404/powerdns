@@ -1,6 +1,6 @@
 FROM alpine:3.24 AS builder
 
-ARG DNSDIST_VERSION="nightly"
+ARG DNSDIST_VERSION="2.0.8"
 
 ARG COMPILER_FLAGS="-Os -fomit-frame-pointer"
 ARG LINKER_FLAGS="-Wl,--as-needed"
